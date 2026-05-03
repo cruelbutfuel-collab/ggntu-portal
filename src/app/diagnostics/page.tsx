@@ -323,7 +323,7 @@ export default function Diagnostics() {
             <p style={{ fontSize: 'clamp(15px,1.1vw,18px)', color: 'rgba(255,255,255,0.60)', maxWidth: 520, lineHeight: 1.6, margin: 0 }}>
               Это общий профиль. Алия проведёт персональный разбор и подберёт специальности именно под твои предметы и цели.
             </p>
-            <Link href="/chat?diag=1" className="btn" style={{ background: 'var(--red)', flexShrink: 0 }}>
+            <Link href={`/chat?holland=${dominant}&label=${encodeURIComponent(info.label)}`} className="btn" style={{ background: 'var(--red)', flexShrink: 0 }}>
               Подобрать со мной <span className="btn__arr"><Arrow /></span>
             </Link>
           </div>

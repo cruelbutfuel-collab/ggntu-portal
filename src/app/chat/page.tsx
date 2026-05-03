@@ -35,14 +35,19 @@ function ChatInner() {
   useReveal()
   const searchParams = useSearchParams()
   const diagMode = searchParams.get('diag') === '1'
+  const hollandKey = searchParams.get('holland') ?? ''
+  const hollandLabel = searchParams.get('label') ?? ''
+  const hollandMode = !!hollandKey
 
   const INITIAL_MESSAGE: Message = {
     id: 0,
     role: 'bot',
-    text: diagMode
-      ? 'Привет! Я <b>Алия</b>. Сейчас помогу подобрать специальность — проведу тест на 8 вопросов по методике Икигай и Holland Codes. Твои ответы помогут найти направление, которое совпадает с твоими интересами. Поехали?'
-      : 'Привет, я <b>Алия</b> — виртуальный ассистент приёмной комиссии. Помогу выбрать направление, разобраться с документами, экзаменами и сроками. Спрашивай или выбирай тему.',
-    buttons: diagMode ? [] : ['specialties', 'fspo', 'exams', 'budget', 'docs', 'dates'],
+    text: hollandMode
+      ? `Привет! Я <b>Алия</b>. Вижу, ты прошёл тест профориентации — твой тип по Holland Codes: <b>${hollandKey} · ${hollandLabel}</b>. Сейчас подберу специальности ГГНТУ, которые подходят именно тебе, и объясню почему.`
+      : diagMode
+        ? 'Привет! Я <b>Алия</b>. Сейчас помогу подобрать специальность — проведу тест на 8 вопросов по методике Икигай и Holland Codes. Твои ответы помогут найти направление, которое совпадает с твоими интересами. Поехали?'
+        : 'Привет, я <b>Алия</b> — виртуальный ассистент приёмной комиссии. Помогу выбрать направление, разобраться с документами, экзаменами и сроками. Спрашивай или выбирай тему.',
+    buttons: hollandMode || diagMode ? [] : ['specialties', 'fspo', 'exams', 'budget', 'docs', 'dates'],
     time: new Date(),
   }
 
@@ -54,6 +59,7 @@ function ChatInner() {
   const idRef = useRef(1)
   const historyRef = useRef<{ role: string; content: string }[]>([])
   const diagTriggered = useRef(false)
+  const hollandTriggered = useRef(false)
 
   useEffect(() => {
     if (bodyRef.current) {
@@ -93,6 +99,18 @@ function ChatInner() {
       }])
     }
   }, [])
+
+  /* Auto-send Holland result for personalised recommendations */
+  useEffect(() => {
+    if (hollandMode && !hollandTriggered.current) {
+      hollandTriggered.current = true
+      const apiText = `Я прошёл тест профориентации. Мой тип личности по Holland Codes — ${hollandKey} (${hollandLabel}). Подбери мне 3-4 самых подходящих специальности ГГНТУ с обоснованием, почему именно они подходят для этого типа личности.`
+      const t = setTimeout(() => {
+        reply(apiText)
+      }, 600)
+      return () => clearTimeout(t)
+    }
+  }, [hollandMode, hollandKey, hollandLabel, reply])
 
   /* Auto-start diagnostic */
   useEffect(() => {
