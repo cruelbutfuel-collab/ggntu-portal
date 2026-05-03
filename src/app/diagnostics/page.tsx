@@ -213,6 +213,15 @@ export default function Diagnostics() {
               </div>
             ))}
           </div>
+
+          <div className="r" style={{ marginTop: 80, paddingTop: 64, borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
+            <h2 className="h-2" style={{ color: 'var(--paper)' }}>
+              Пройди тест<br />за <em>3 минуты</em>.
+            </h2>
+            <button className="btn" onClick={() => setPhase('quiz')} style={{ background: 'var(--red)', flexShrink: 0 }}>
+              Начать тест <span className="btn__arr"><Arrow /></span>
+            </button>
+          </div>
         </div>
       </section>
     </main>
@@ -308,6 +317,15 @@ export default function Diagnostics() {
                 {info.desc}
               </div>
             </div>
+          </div>
+
+          <div style={{ marginTop: 56, paddingTop: 48, borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
+            <p style={{ fontSize: 'clamp(15px,1.1vw,18px)', color: 'rgba(255,255,255,0.60)', maxWidth: 520, lineHeight: 1.6, margin: 0 }}>
+              Это общий профиль. Алия проведёт персональный разбор и подберёт специальности именно под твои предметы и цели.
+            </p>
+            <Link href="/chat?diag=1" className="btn" style={{ background: 'var(--red)', flexShrink: 0 }}>
+              Подобрать со мной <span className="btn__arr"><Arrow /></span>
+            </Link>
           </div>
         </div>
       </section>
