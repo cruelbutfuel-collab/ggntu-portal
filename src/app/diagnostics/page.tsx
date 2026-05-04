@@ -370,7 +370,7 @@ export default function Diagnostics() {
             <h2 className="h-2" style={{ marginBottom: 48 }}>Куда планируешь<br /><em>поступать?</em></h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {([
-                { val: 'uni' as const, label: 'В университет — бакалавриат / специалитет', sub: 'После 11 класса, с ЕГЭ' },
+                { val: 'uni' as const, label: 'В университет — бакалавриат / специалитет', sub: 'После 11 класса или колледжа, с ЕГЭ' },
                 { val: 'spo' as const, label: 'В колледж ГГНТУ (СПО)', sub: 'После 9 или 11 класса, без ЕГЭ — по среднему баллу аттестата' },
               ]).map(opt => (
                 <button
