@@ -170,6 +170,7 @@ function IkigaiResultDiagram({ love, good, world, paid }: { love: number; good: 
 export default function Diagnostics() {
   useReveal()
   const [phase, setPhase] = useState<'intro' | 'quiz' | 'result'>('intro')
+  const [level, setLevel] = useState<'uni' | 'spo' | null>(null)
   const [step, setStep] = useState(0)
   const [scores, setScores] = useState<Record<HollandKey, number>>({ R:0, I:0, A:0, S:0, E:0, C:0 })
 
@@ -183,6 +184,7 @@ export default function Diagnostics() {
 
   function restart() {
     setPhase('intro')
+    setLevel(null)
     setStep(0)
     setScores({ R:0, I:0, A:0, S:0, E:0, C:0 })
   }
@@ -190,7 +192,9 @@ export default function Diagnostics() {
   /* ── Compute results ────────────────────────── */
   const dominant = (Object.keys(scores) as HollandKey[]).reduce((a, b) => scores[a] >= scores[b] ? a : b)
   const info = HOLLAND[dominant]
-  const faculties = FACULTIES.filter(f => info.facIds.includes(f.id))
+  const faculties = level === 'spo'
+    ? FACULTIES.filter(f => f.id === 'fspo')
+    : FACULTIES.filter(f => info.facIds.includes(f.id))
 
   /* Ikigai: weighted sum of Holland scores, normalised to 0-1 */
   const total = Object.values(scores).reduce((s, v) => s + v, 0) || 1
@@ -354,6 +358,39 @@ export default function Diagnostics() {
     </main>
   )
 
+  /* ──────────────── LEVEL SELECT ──────────── */
+  if (phase === 'quiz' && level === null) return (
+    <main className="page">
+      <section style={{ minHeight: 'calc(100vh - 76px)', display: 'flex', alignItems: 'center', padding: 'clamp(60px,8vw,100px) 0' }}>
+        <div className="wrap" style={{ width: '100%' }}>
+          <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
+            <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 40 }}>
+              Шаг 0 · перед началом
+            </div>
+            <h2 className="h-2" style={{ marginBottom: 48 }}>Куда планируешь<br /><em>поступать?</em></h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {([
+                { val: 'uni' as const, label: 'В университет — бакалавриат / специалитет', sub: 'После 11 класса, с ЕГЭ' },
+                { val: 'spo' as const, label: 'В колледж ГГНТУ (СПО)', sub: 'После 9 или 11 класса, без ЕГЭ — по среднему баллу аттестата' },
+              ]).map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => setLevel(opt.val)}
+                  style={{ padding: '20px 28px', border: '1px solid var(--line-2)', borderRadius: 12, textAlign: 'left', background: 'var(--paper)', color: 'var(--ink)', cursor: 'pointer', transition: 'border-color .2s, background .2s, transform .2s var(--e-out)' }}
+                  onMouseEnter={e => { const el = e.currentTarget; el.style.borderColor = 'var(--ink)'; el.style.background = 'var(--paper-2)'; el.style.transform = 'translateX(6px)' }}
+                  onMouseLeave={e => { const el = e.currentTarget; el.style.borderColor = 'var(--line-2)'; el.style.background = 'var(--paper)'; el.style.transform = 'translateX(0)' }}
+                >
+                  <div style={{ fontSize: 16, marginBottom: 4 }}>{opt.label}</div>
+                  <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.08em', color: 'var(--muted)', textTransform: 'uppercase' }}>{opt.sub}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  )
+
   /* ──────────────── QUIZ ───────────────────── */
   if (phase === 'quiz') {
     const q = QUESTIONS[step]
@@ -474,7 +511,7 @@ export default function Diagnostics() {
               Это общий профиль. Алия проведёт персональный разбор и подберёт специальности именно под твои предметы и цели.
             </p>
             <Link
-              href={`/chat?holland=${dominant}&label=${encodeURIComponent(info.label)}&zone=${encodeURIComponent(zone.name)}`}
+              href={`/chat?holland=${dominant}&label=${encodeURIComponent(info.label)}&zone=${encodeURIComponent(zone.name)}&level=${level ?? 'uni'}`}
               className="btn"
               style={{ background: 'var(--red)', flexShrink: 0 }}
             >

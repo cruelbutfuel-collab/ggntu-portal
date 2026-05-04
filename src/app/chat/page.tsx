@@ -38,13 +38,16 @@ function ChatInner() {
   const hollandKey = searchParams.get('holland') ?? ''
   const hollandLabel = searchParams.get('label') ?? ''
   const hollandZone = searchParams.get('zone') ?? ''
+  const hollandLevel = searchParams.get('level') ?? 'uni'
   const hollandMode = !!hollandKey
+
+  const levelLabel = hollandLevel === 'spo' ? 'колледж (СПО)' : 'университет (бакалавриат)'
 
   const INITIAL_MESSAGE: Message = {
     id: 0,
     role: 'bot',
     text: hollandMode
-      ? `Привет! Я <b>Алия</b>. Вижу, ты прошёл тест профориентации — твой тип по Holland Codes: <b>${hollandKey} · ${hollandLabel}</b>. Сейчас подберу специальности ГГНТУ, которые подходят именно тебе, и объясню почему.`
+      ? `Привет! Я <b>Алия</b>. Вижу, ты прошёл тест — твой тип по Holland Codes: <b>${hollandKey} · ${hollandLabel}</b>, уровень: <b>${levelLabel}</b>. Подбираю подходящие специальности.`
       : diagMode
         ? 'Привет! Я <b>Алия</b>. Сейчас помогу подобрать специальность — проведу тест на 8 вопросов по методике Икигай и Holland Codes. Твои ответы помогут найти направление, которое совпадает с твоими интересами. Поехали?'
         : 'Привет, я <b>Алия</b> — виртуальный ассистент приёмной комиссии. Помогу выбрать направление, разобраться с документами, экзаменами и сроками. Спрашивай или выбирай тему.',
@@ -106,13 +109,14 @@ function ChatInner() {
     if (hollandMode && !hollandTriggered.current) {
       hollandTriggered.current = true
       const zoneStr = hollandZone ? `, Икигай-зона — ${hollandZone}` : ''
-      const apiText = `Я прошёл тест профориентации. Мой тип личности по Holland Codes — ${hollandKey} (${hollandLabel})${zoneStr}. Подбери мне 3-4 самых подходящих специальности ГГНТУ с обоснованием, почему именно они подходят для этого типа личности и Икигай-зоны.`
+      const levelStr = hollandLevel === 'spo' ? 'колледж ГГНТУ (СПО, без ЕГЭ)' : 'университет (бакалавриат/специалитет)'
+      const apiText = `Я прошёл тест профориентации. Мой тип личности по Holland Codes — ${hollandKey} (${hollandLabel})${zoneStr}. Я хочу поступать в ${levelStr}. Подбери мне 3-4 самых подходящих специальности с обоснованием, почему именно они подходят для этого типа личности и Икигай-зоны.`
       const t = setTimeout(() => {
         reply(apiText)
       }, 600)
       return () => clearTimeout(t)
     }
-  }, [hollandMode, hollandKey, hollandLabel, hollandZone, reply])
+  }, [hollandMode, hollandKey, hollandLabel, hollandZone, hollandLevel, reply])
 
   /* Auto-start diagnostic */
   useEffect(() => {
