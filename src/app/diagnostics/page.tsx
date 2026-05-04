@@ -6,96 +6,125 @@ import { useReveal } from '@/hooks/useReveal'
 import { Arrow } from '@/components/icons'
 import { FACULTIES } from '@/lib/data'
 
-/* ── Holland types ────────────────────────────── */
+/* ── Types ─────────────────────────────────────── */
 type HollandKey = 'R' | 'I' | 'A' | 'S' | 'E' | 'C'
+type IkigaiAxis = 'love' | 'good' | 'world' | 'paid'
 
+/* ── Holland ───────────────────────────────────── */
 const HOLLAND: Record<HollandKey, { label: string; desc: string; facIds: string[] }> = {
-  R: { label: 'Реалист',         desc: 'Техника, инженерия, физический труд',  facIds: ['ie', 'inig']       },
-  I: { label: 'Исследователь',   desc: 'Наука, анализ, исследования',           facIds: ['inig']             },
-  A: { label: 'Художник',        desc: 'Творчество, дизайн, архитектура',       facIds: ['isaid']            },
-  S: { label: 'Социальный',      desc: 'Люди, управление, коммуникации',        facIds: ['iceitp']           },
-  E: { label: 'Предприниматель', desc: 'Бизнес, лидерство, менеджмент',         facIds: ['iceitp']           },
-  C: { label: 'Системный',       desc: 'Данные, IT, точность, структура',       facIds: ['ipit', 'iceitp']   },
+  R: { label: 'Реалист',         desc: 'Техника, инженерия, физический труд',  facIds: ['ie', 'inig']     },
+  I: { label: 'Исследователь',   desc: 'Наука, анализ, исследования',           facIds: ['inig']           },
+  A: { label: 'Художник',        desc: 'Творчество, дизайн, архитектура',       facIds: ['isaid']          },
+  S: { label: 'Социальный',      desc: 'Люди, управление, коммуникации',        facIds: ['iceitp']         },
+  E: { label: 'Предприниматель', desc: 'Бизнес, лидерство, менеджмент',         facIds: ['iceitp']         },
+  C: { label: 'Системный',       desc: 'Данные, IT, точность, структура',       facIds: ['ipit', 'iceitp'] },
 }
 
-/* ── Quiz questions ───────────────────────────── */
+/* ── Ikigai axes ───────────────────────────────── */
+const IKIGAI_AXES: Record<IkigaiAxis, { label: string; color: string }> = {
+  love:  { label: 'Что любишь',     color: 'rgba(200,16,46,1)'  },
+  good:  { label: 'В чём силён',    color: 'rgba(34,140,60,1)'  },
+  world: { label: 'Что нужно миру', color: 'rgba(80,120,220,1)' },
+  paid:  { label: 'За что платят',  color: 'rgba(190,150,20,1)' },
+}
+
+/* ── Ikigai zones (top-2 axes sorted alphabetically) */
+const IKIGAI_ZONE: Record<string, { name: string; desc: string }> = {
+  'good-love':  { name: 'Страсть',    desc: 'Ты любишь то, в чём по-настоящему силён. Ищи профессию, где работа ощущается как увлечение.' },
+  'love-world': { name: 'Миссия',     desc: 'Ты хочешь менять мир через то, что любишь. Твоя мотивация — смысл, а не только результат.'   },
+  'love-paid':  { name: 'Баланс',     desc: 'Тебе важно, чтобы работа нравилась и достойно оплачивалась. Страсть и стабильность вместе.'   },
+  'good-world': { name: 'Призвание',  desc: 'Ты используешь свои таланты на благо общества. Карьера строится вокруг вклада в мир.'        },
+  'good-paid':  { name: 'Профессия',  desc: 'Карьера строится на твоих сильных сторонах. Рост, экспертиза и хорошее вознаграждение.'       },
+  'paid-world': { name: 'Вокация',    desc: 'Твоя работа нужна миру и хорошо оплачивается. Прагматика сочетается с ответственностью.'     },
+}
+
+/* ── Holland → Ikigai weight matrix ───────────── */
+const H2I: Record<HollandKey, Record<IkigaiAxis, number>> = {
+  R: { love: 0.30, good: 0.90, world: 0.20, paid: 0.60 },
+  I: { love: 0.50, good: 0.90, world: 0.60, paid: 0.40 },
+  A: { love: 0.90, good: 0.50, world: 0.50, paid: 0.30 },
+  S: { love: 0.70, good: 0.40, world: 0.90, paid: 0.40 },
+  E: { love: 0.40, good: 0.60, world: 0.50, paid: 0.90 },
+  C: { love: 0.30, good: 0.80, world: 0.30, paid: 0.80 },
+}
+
+/* ── Quiz questions ────────────────────────────── */
 const QUESTIONS: { q: string; opts: { t: string; types: HollandKey[] }[] }[] = [
   {
-    q: 'Что тебя привлекает больше всего?',
+    q: 'Что тебя по-настоящему увлекает?',
     opts: [
-      { t: 'Техника, код, расчёты',       types: ['R', 'C'] },
-      { t: 'Творчество, дизайн, идеи',    types: ['A']      },
-      { t: 'Люди, общение, команда',      types: ['S', 'E'] },
-      { t: 'Наука, природа, открытия',    types: ['I']      },
+      { t: 'Техника, код и точные расчёты',     types: ['R', 'C'] },
+      { t: 'Исследования и открытия',            types: ['I']      },
+      { t: 'Творчество, дизайн, создание',       types: ['A']      },
+      { t: 'Общение, помощь людям',              types: ['S', 'E'] },
     ],
   },
   {
-    q: 'Как ты предпочитаешь работать?',
+    q: 'В свободное время ты чаще...',
     opts: [
-      { t: 'Практик — делаю руками',                 types: ['R'] },
-      { t: 'Теоретик — исследую и анализирую',       types: ['I'] },
-      { t: 'Организатор — планирую и управляю',      types: ['E'] },
-      { t: 'Командный игрок — поддерживаю других',   types: ['S'] },
+      { t: 'Изучаешь технику или программируешь', types: ['R', 'C'] },
+      { t: 'Читаешь, анализируешь, исследуешь',   types: ['I']      },
+      { t: 'Рисуешь, создаёшь, придумываешь',     types: ['A']      },
+      { t: 'Общаешься и организуешь встречи',      types: ['S', 'E'] },
     ],
   },
   {
-    q: 'Какие школьные предметы нравились больше?',
+    q: 'Что получается у тебя лучше всего?',
     opts: [
-      { t: 'Точные науки (матем, физика, IT)',         types: ['C', 'I'] },
-      { t: 'Гуманитарные (история, право, общество)', types: ['S', 'E'] },
-      { t: 'Творческие (ИЗО, литература, музыка)',    types: ['A']      },
-      { t: 'Естественные (биология, химия, экология)',types: ['I', 'R'] },
+      { t: 'Работать с техникой и инструментами',      types: ['R']      },
+      { t: 'Анализировать данные и находить паттерны', types: ['I', 'C'] },
+      { t: 'Создавать оригинальные идеи',              types: ['A']      },
+      { t: 'Вести за собой и убеждать',                types: ['E', 'S'] },
     ],
   },
   {
-    q: 'Где ты видишь себя через 5 лет?',
+    q: 'Тебя чаще всего просят помочь с...',
     opts: [
-      { t: 'На производстве или в лаборатории',      types: ['R', 'I'] },
-      { t: 'В собственном деле или топ-менеджменте', types: ['E']      },
-      { t: 'В творческой профессии',                 types: ['A']      },
-      { t: 'В работе с людьми',                      types: ['S']      },
+      { t: 'Чем-то техническим или цифровым',    types: ['R', 'C'] },
+      { t: 'Объяснить сложную тему',             types: ['I']      },
+      { t: 'Сделать красиво — дизайн, текст',    types: ['A']      },
+      { t: 'Организовать или урегулировать',      types: ['S', 'E'] },
     ],
   },
   {
-    q: 'Что важнее для тебя в работе?',
+    q: 'Какой вклад важен для тебя?',
     opts: [
-      { t: 'Создавать что-то реальное, видимое',     types: ['R']      },
-      { t: 'Решать сложные задачи и анализировать',  types: ['I', 'C'] },
-      { t: 'Самовыражение и творчество',             types: ['A']      },
-      { t: 'Помогать людям и быть нужным',           types: ['S']      },
-      { t: 'Карьерный рост и финансовый результат',  types: ['E']      },
+      { t: 'Создавать технологии будущего', types: ['R', 'I', 'C'] },
+      { t: 'Делать мир красивее и культурнее', types: ['A']        },
+      { t: 'Помогать людям и обществу',        types: ['S']        },
+      { t: 'Развивать экономику и бизнес',     types: ['E']        },
     ],
   },
   {
-    q: 'Что из этого ближе к твоим ценностям?',
+    q: 'Что тебя волнует больше всего?',
     opts: [
-      { t: 'Технический прогресс',              types: ['R', 'C'] },
-      { t: 'Красота и культура',                types: ['A']      },
-      { t: 'Благополучие людей',                types: ['S']      },
-      { t: 'Развитие бизнеса и экономики',      types: ['E', 'I'] },
+      { t: 'Технологическое отставание / энергетика', types: ['R', 'C'] },
+      { t: 'Экология и устойчивое развитие',          types: ['I']      },
+      { t: 'Культурное и творческое обеднение',       types: ['A']      },
+      { t: 'Социальное неравенство',                   types: ['S', 'E'] },
     ],
   },
   {
-    q: 'Какой результат работы тебя радует больше всего?',
+    q: 'Где видишь себя через 5 лет?',
     opts: [
-      { t: 'Построенный объект или рабочая система', types: ['R', 'C'] },
-      { t: 'Новое открытие или изобретение',         types: ['I']      },
-      { t: 'Красивый проект или произведение',       types: ['A']      },
-      { t: 'Благодарность и доверие людей',          types: ['S', 'E'] },
+      { t: 'Инженер, IT-специалист, учёный',           types: ['R', 'I', 'C'] },
+      { t: 'Предприниматель или топ-менеджер',          types: ['E']           },
+      { t: 'Архитектор, дизайнер, творческий спец.',   types: ['A']           },
+      { t: 'Специалист по работе с людьми',            types: ['S']           },
     ],
   },
   {
-    q: 'Какой образ тебе ближе всего?',
+    q: 'Что важнее в карьере?',
     opts: [
-      { t: 'Инженер, строящий и изобретающий',   types: ['R', 'I'] },
-      { t: 'Архитектор, создающий пространство', types: ['A']      },
-      { t: 'Руководитель, ведущий команду',      types: ['E', 'S'] },
-      { t: 'Программист, решающий задачи',       types: ['C', 'I'] },
+      { t: 'Техническая экспертиза и глубина знаний', types: ['R', 'I', 'C'] },
+      { t: 'Власть, влияние и финансовый результат',  types: ['E']           },
+      { t: 'Признание и творческая свобода',           types: ['A']           },
+      { t: 'Смысл и возможность помогать',             types: ['S']           },
     ],
   },
 ]
 
-/* ── Ikigai SVG ───────────────────────────────── */
+/* ── Static Ikigai diagram (intro) ─────────────── */
 function IkigaiDiagram() {
   return (
     <div style={{ position: 'relative', width: 320, height: 320, flexShrink: 0 }}>
@@ -115,7 +144,29 @@ function IkigaiDiagram() {
   )
 }
 
-/* ── Main page ────────────────────────────────── */
+/* ── Dynamic Ikigai result diagram ─────────────── */
+function IkigaiResultDiagram({ love, good, world, paid }: { love: number; good: number; world: number; paid: number }) {
+  const b = 0.07
+  const s = 0.38
+  return (
+    <div style={{ position: 'relative', width: 260, height: 260, flexShrink: 0 }}>
+      <svg viewBox="0 0 260 260" width="260" height="260" aria-hidden="true" style={{ overflow: 'visible' }}>
+        <circle cx="130" cy="88"  r="78" fill={`rgba(200,16,46,${b + love * s})`}  />
+        <circle cx="182" cy="160" r="78" fill={`rgba(34,140,60,${b + good * s})`}  />
+        <circle cx="130" cy="230" r="78" fill={`rgba(80,120,220,${b + world * s})`} />
+        <circle cx="78"  cy="160" r="78" fill={`rgba(190,150,20,${b + paid * s})`}  />
+        <circle cx="130" cy="160" r="22" fill="rgba(255,255,255,0.10)" />
+        <text x="130" y="165" textAnchor="middle" fill="white" fontFamily="Georgia,serif" fontStyle="italic" fontSize="10" opacity="0.75">ikigai</text>
+      </svg>
+      <div style={{ position:'absolute', top:-14, left:'50%', transform:'translateX(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(220,80,80,0.85)', whiteSpace:'nowrap' }}>ЧТО ЛЮБИШЬ</div>
+      <div style={{ position:'absolute', top:'50%', right:-60, transform:'translateY(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(60,160,80,0.85)', writingMode:'vertical-rl' }}>В ЧЁМ СИЛЁН</div>
+      <div style={{ position:'absolute', bottom:-16, left:'50%', transform:'translateX(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(100,140,220,0.85)', whiteSpace:'nowrap' }}>ЧТО НУЖНО МИРУ</div>
+      <div style={{ position:'absolute', top:'50%', left:-68, transform:'translateY(-50%) rotate(180deg)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(190,150,20,0.85)', writingMode:'vertical-rl' }}>ЗА ЧТО ПЛАТЯТ</div>
+    </div>
+  )
+}
+
+/* ── Main page ──────────────────────────────────── */
 export default function Diagnostics() {
   useReveal()
   const [phase, setPhase] = useState<'intro' | 'quiz' | 'result'>('intro')
@@ -124,13 +175,10 @@ export default function Diagnostics() {
 
   function pick(types: HollandKey[]) {
     const next = { ...scores }
-    types.forEach(t => { next[t] = (next[t] ?? 0) + 1 })
+    types.forEach(t => { next[t]++ })
     setScores(next)
-    if (step < QUESTIONS.length - 1) {
-      setStep(s => s + 1)
-    } else {
-      setPhase('result')
-    }
+    if (step < QUESTIONS.length - 1) setStep(s => s + 1)
+    else setPhase('result')
   }
 
   function restart() {
@@ -139,31 +187,49 @@ export default function Diagnostics() {
     setScores({ R:0, I:0, A:0, S:0, E:0, C:0 })
   }
 
-  /* ── dominant Holland type ── */
+  /* ── Compute results ────────────────────────── */
   const dominant = (Object.keys(scores) as HollandKey[]).reduce((a, b) => scores[a] >= scores[b] ? a : b)
   const info = HOLLAND[dominant]
   const faculties = FACULTIES.filter(f => info.facIds.includes(f.id))
 
+  /* Ikigai: weighted sum of Holland scores, normalised to 0-1 */
+  const total = Object.values(scores).reduce((s, v) => s + v, 0) || 1
+  const raw = { love: 0, good: 0, world: 0, paid: 0 }
+  ;(Object.keys(scores) as HollandKey[]).forEach(k => {
+    const w = scores[k] / total
+    ;(Object.keys(raw) as IkigaiAxis[]).forEach(ax => { raw[ax] += w * H2I[k][ax] })
+  })
+  const maxRaw = Math.max(...Object.values(raw)) || 1
+  const ik: Record<IkigaiAxis, number> = {
+    love:  raw.love  / maxRaw,
+    good:  raw.good  / maxRaw,
+    world: raw.world / maxRaw,
+    paid:  raw.paid  / maxRaw,
+  }
+
+  /* Top-2 axes → zone key */
+  const sorted = (Object.keys(ik) as IkigaiAxis[]).sort((a, b) => ik[b] - ik[a])
+  const zoneKey = [sorted[0], sorted[1]].sort().join('-')
+  const zone = IKIGAI_ZONE[zoneKey] ?? { name: 'Икигай', desc: 'Ты гармонично развит по всем направлениям.' }
+
   /* ──────────────── INTRO ──────────────────── */
   if (phase === 'intro') return (
     <main className="page">
-
-      {/* Hero */}
       <section style={{ padding: 'clamp(80px,10vw,140px) 0 clamp(60px,8vw,100px)' }}>
         <div className="wrap">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 48, flexWrap: 'wrap' }}>
             <div style={{ flex: '1 1 420px', maxWidth: 560 }}>
-              <div className="eyebrow r" style={{ marginBottom: 24 }}>№ 06 / Профориентация · Икигай</div>
+              <div className="eyebrow r" style={{ marginBottom: 24 }}>№ 06 / Профориентация · Икигай + Holland</div>
               <h1 className="h-display r" style={{ marginBottom: 28 }}>
                 Найди своё<br /><em>направление.</em>
               </h1>
               <p className="lead r" style={{ marginBottom: 36, color: 'var(--muted)' }}>
-                8 вопросов. Алия проанализирует твои ответы по методологии Икигай
-                и Holland Codes — и подберёт специальности ГГНТУ, которые совпадают
+                8 вопросов. Алия проанализирует твои ответы сразу по двум методологиям —
+                Holland Codes и Икигай — и покажет специальности ГГНТУ, которые совпадают
                 с твоим профилем.
               </p>
               <div className="r" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 36 }}>
-                {['8 вопросов', '3 минуты', 'Персональный результат'].map(tag => (
+                {['8 вопросов', '3 минуты', 'Два метода', 'Персональный результат'].map(tag => (
                   <span key={tag} style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase', padding: '6px 14px', border: '1px solid var(--line-2)', borderRadius: 999 }}>
                     {tag}
                   </span>
@@ -180,7 +246,6 @@ export default function Diagnostics() {
         </div>
       </section>
 
-      {/* Methodology (dark) */}
       <section style={{ background: 'var(--ink)', color: 'var(--paper)', padding: 'clamp(80px,10vw,120px) 0' }}>
         <div className="wrap">
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, marginBottom: 64, alignItems: 'start' }} className="r">
@@ -195,7 +260,8 @@ export default function Diagnostics() {
             <p style={{ fontSize: 'clamp(15px,1.1vw,18px)', lineHeight: 1.6, color: 'rgba(255,255,255,0.65)', alignSelf: 'center' }}>
               Holland Codes — научная классификация профтипов личности, используется
               в профориентации по всему миру. Икигай — японская концепция смысла
-              через пересечение призвания и профессии.
+              через пересечение того, что любишь, в чём силён, что нужно миру и за что платят.
+              Вместе они дают объёмный портрет.
             </p>
           </div>
 
@@ -230,18 +296,17 @@ export default function Diagnostics() {
   /* ──────────────── QUIZ ───────────────────── */
   if (phase === 'quiz') {
     const q = QUESTIONS[step]
-    const progress = ((step) / QUESTIONS.length) * 100
+    const progress = (step / QUESTIONS.length) * 100
     return (
       <main className="page">
         <section style={{ minHeight: 'calc(100vh - 76px)', display: 'flex', alignItems: 'center', padding: 'clamp(60px,8vw,100px) 0' }}>
           <div className="wrap" style={{ width: '100%' }}>
-            {/* Progress */}
             <div style={{ marginBottom: 48 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                 <span style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)' }}>
                   Вопрос {step + 1} из {QUESTIONS.length}
                 </span>
-                <button onClick={restart} style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted)', opacity: 0.6 }}>
+                <button onClick={restart} style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted)', opacity: 0.6, background: 'none', border: 'none', cursor: 'pointer' }}>
                   Начать заново
                 </button>
               </div>
@@ -250,7 +315,6 @@ export default function Diagnostics() {
               </div>
             </div>
 
-            {/* Question */}
             <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
               <h2 className="h-2" style={{ marginBottom: 48 }}>{q.q}</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -258,29 +322,9 @@ export default function Diagnostics() {
                   <button
                     key={opt.t}
                     onClick={() => pick(opt.types)}
-                    style={{
-                      padding: '18px 28px',
-                      border: '1px solid var(--line-2)',
-                      borderRadius: 12,
-                      fontSize: 16,
-                      textAlign: 'left',
-                      background: 'var(--paper)',
-                      color: 'var(--ink)',
-                      transition: 'border-color .2s, background .2s, transform .2s var(--e-out)',
-                      cursor: 'pointer',
-                    }}
-                    onMouseEnter={e => {
-                      const el = e.currentTarget
-                      el.style.borderColor = 'var(--ink)'
-                      el.style.background = 'var(--paper-2)'
-                      el.style.transform = 'translateX(6px)'
-                    }}
-                    onMouseLeave={e => {
-                      const el = e.currentTarget
-                      el.style.borderColor = 'var(--line-2)'
-                      el.style.background = 'var(--paper)'
-                      el.style.transform = 'translateX(0)'
-                    }}
+                    style={{ padding: '18px 28px', border: '1px solid var(--line-2)', borderRadius: 12, fontSize: 16, textAlign: 'left', background: 'var(--paper)', color: 'var(--ink)', cursor: 'pointer', transition: 'border-color .2s, background .2s, transform .2s var(--e-out)' }}
+                    onMouseEnter={e => { const el = e.currentTarget; el.style.borderColor = 'var(--ink)'; el.style.background = 'var(--paper-2)'; el.style.transform = 'translateX(6px)' }}
+                    onMouseLeave={e => { const el = e.currentTarget; el.style.borderColor = 'var(--line-2)'; el.style.background = 'var(--paper)'; el.style.transform = 'translateX(0)' }}
                   >
                     {opt.t}
                   </button>
@@ -296,41 +340,90 @@ export default function Diagnostics() {
   /* ──────────────── RESULT ─────────────────── */
   return (
     <main className="page">
-      {/* Result header (dark) */}
+      {/* Dark: Holland type + Ikigai diagram + zone */}
       <section style={{ background: 'var(--ink)', color: 'var(--paper)', padding: 'clamp(80px,10vw,120px) 0' }}>
         <div className="wrap">
-          <div className="eyebrow r" style={{ marginBottom: 24, color: 'rgba(255,255,255,0.45)' }}>
-            Твой профиль · Holland Codes
+          <div className="eyebrow r" style={{ marginBottom: 32, color: 'rgba(255,255,255,0.40)' }}>
+            Твой профиль · Holland Codes + Икигай
           </div>
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 24, flexWrap: 'wrap' }}>
-            <div style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 'clamp(80px,14vw,180px)', color: 'var(--red)', lineHeight: 0.85, letterSpacing: '-0.04em' }} className="r">
-              {dominant}
-            </div>
+
+          {/* Main result row */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 48, flexWrap: 'wrap', marginBottom: 56 }}>
+            {/* Holland */}
             <div className="r">
-              <div style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>
-                Тип личности
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 20, marginBottom: 24 }}>
+                <div style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 'clamp(80px,12vw,160px)', color: 'var(--red)', lineHeight: 0.85, letterSpacing: '-0.04em' }}>
+                  {dominant}
+                </div>
+                <div style={{ paddingBottom: 12 }}>
+                  <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.40)', marginBottom: 6 }}>
+                    Тип по Holland
+                  </div>
+                  <div style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(24px,3vw,40px)', color: 'var(--paper)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+                    {info.label}
+                  </div>
+                  <div style={{ marginTop: 8, fontSize: 15, color: 'rgba(255,255,255,0.50)' }}>
+                    {info.desc}
+                  </div>
+                </div>
               </div>
-              <div style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(28px,3.5vw,48px)', color: 'var(--paper)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
-                {info.label}
+
+              {/* Ikigai zone badge */}
+              <div style={{ display: 'inline-block', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', padding: '16px 24px', maxWidth: 420 }}>
+                <div style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.40)', marginBottom: 6 }}>
+                  Икигай-зона
+                </div>
+                <div style={{ fontFamily: 'var(--serif)', fontSize: 22, color: 'var(--red)', marginBottom: 6 }}>
+                  {zone.name}
+                </div>
+                <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.55 }}>
+                  {zone.desc}
+                </div>
               </div>
-              <div style={{ marginTop: 10, fontSize: 16, color: 'rgba(255,255,255,0.55)' }}>
-                {info.desc}
-              </div>
+            </div>
+
+            {/* Ikigai dynamic diagram */}
+            <div className="r" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40 }}>
+              <IkigaiResultDiagram love={ik.love} good={ik.good} world={ik.world} paid={ik.paid} />
             </div>
           </div>
 
-          <div style={{ marginTop: 56, paddingTop: 48, borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
+          {/* Ikigai axis bars */}
+          <div className="r" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px 48px', marginBottom: 56 }}>
+            {(Object.keys(IKIGAI_AXES) as IkigaiAxis[]).map(ax => (
+              <div key={ax}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <span style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.50)' }}>
+                    {IKIGAI_AXES[ax].label}
+                  </span>
+                  <span style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>
+                    {Math.round(ik[ax] * 100)}%
+                  </span>
+                </div>
+                <div style={{ height: 3, background: 'rgba(255,255,255,0.08)', borderRadius: 99 }}>
+                  <div style={{ height: '100%', width: `${ik[ax] * 100}%`, background: IKIGAI_AXES[ax].color, borderRadius: 99, opacity: 0.75 }} />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA to chat */}
+          <div style={{ paddingTop: 48, borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
             <p style={{ fontSize: 'clamp(15px,1.1vw,18px)', color: 'rgba(255,255,255,0.60)', maxWidth: 520, lineHeight: 1.6, margin: 0 }}>
               Это общий профиль. Алия проведёт персональный разбор и подберёт специальности именно под твои предметы и цели.
             </p>
-            <Link href={`/chat?holland=${dominant}&label=${encodeURIComponent(info.label)}`} className="btn" style={{ background: 'var(--red)', flexShrink: 0 }}>
+            <Link
+              href={`/chat?holland=${dominant}&label=${encodeURIComponent(info.label)}&zone=${encodeURIComponent(zone.name)}`}
+              className="btn"
+              style={{ background: 'var(--red)', flexShrink: 0 }}
+            >
               Подобрать со мной <span className="btn__arr"><Arrow /></span>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Recommended specialties */}
+      {/* Light: Recommended specialties */}
       <section style={{ padding: 'clamp(60px,8vw,100px) 0' }}>
         <div className="wrap">
           <div style={{ marginBottom: 48 }}>
@@ -357,13 +450,9 @@ export default function Diagnostics() {
             </div>
           ))}
 
-          {/* CTAs */}
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 16 }}>
             <Link href="/specialties" className="btn">
               Все специальности <span className="btn__arr"><Arrow /></span>
-            </Link>
-            <Link href="/chat" className="btn btn--ghost">
-              Спросить Алию
             </Link>
             <button className="btn btn--ghost" onClick={restart}>
               Пройти заново

@@ -37,6 +37,7 @@ function ChatInner() {
   const diagMode = searchParams.get('diag') === '1'
   const hollandKey = searchParams.get('holland') ?? ''
   const hollandLabel = searchParams.get('label') ?? ''
+  const hollandZone = searchParams.get('zone') ?? ''
   const hollandMode = !!hollandKey
 
   const INITIAL_MESSAGE: Message = {
@@ -104,13 +105,14 @@ function ChatInner() {
   useEffect(() => {
     if (hollandMode && !hollandTriggered.current) {
       hollandTriggered.current = true
-      const apiText = `Я прошёл тест профориентации. Мой тип личности по Holland Codes — ${hollandKey} (${hollandLabel}). Подбери мне 3-4 самых подходящих специальности ГГНТУ с обоснованием, почему именно они подходят для этого типа личности.`
+      const zoneStr = hollandZone ? `, Икигай-зона — ${hollandZone}` : ''
+      const apiText = `Я прошёл тест профориентации. Мой тип личности по Holland Codes — ${hollandKey} (${hollandLabel})${zoneStr}. Подбери мне 3-4 самых подходящих специальности ГГНТУ с обоснованием, почему именно они подходят для этого типа личности и Икигай-зоны.`
       const t = setTimeout(() => {
         reply(apiText)
       }, 600)
       return () => clearTimeout(t)
     }
-  }, [hollandMode, hollandKey, hollandLabel, reply])
+  }, [hollandMode, hollandKey, hollandLabel, hollandZone, reply])
 
   /* Auto-start diagnostic */
   useEffect(() => {
