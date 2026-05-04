@@ -280,10 +280,71 @@ export default function Diagnostics() {
             ))}
           </div>
 
-          <div className="r" style={{ marginTop: 80, paddingTop: 64, borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
-            <h2 className="h-2" style={{ color: 'var(--paper)' }}>
-              Пройди тест<br />за <em>3 минуты</em>.
-            </h2>
+        </div>
+      </section>
+
+      {/* ── Ikigai section (light) ── */}
+      <section style={{ padding: 'clamp(80px,10vw,120px) 0' }}>
+        <div className="wrap">
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 24, marginBottom: 48, flexWrap: 'wrap' }}>
+            <div>
+              <div className="eyebrow r" style={{ marginBottom: 16 }}>
+                <b style={{ color: 'var(--red)' }}>03</b> · Четыре оси Икигай
+              </div>
+              <h2 className="h-2 r">Тест измеряет<br /><em>каждую из них.</em></h2>
+            </div>
+            <p className="r" style={{ fontSize: 'clamp(15px,1.1vw,17px)', lineHeight: 1.7, color: 'var(--muted)', maxWidth: 400, margin: 0 }}>
+              Результат покажет, какие оси у тебя развиты сильнее — и в какой зоне находится твоё призвание.
+            </p>
+          </div>
+
+          {/* 4 axis cards */}
+          <div className="r-stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 16 }}>
+            {([
+              { color: 'rgba(200,16,46,1)',  bg: 'rgba(200,16,46,0.06)',  label: 'Что любишь',     desc: 'Твои страсти и интересы — то, что зажигает и вдохновляет.' },
+              { color: 'rgba(34,140,60,1)',  bg: 'rgba(34,140,60,0.06)',  label: 'В чём силён',    desc: 'Твои таланты и навыки — то, что получается лучше всего.'   },
+              { color: 'rgba(80,120,220,1)', bg: 'rgba(80,120,220,0.06)', label: 'Что нужно миру', desc: 'Потребности общества — проблемы, которые важно решать.'     },
+              { color: 'rgba(190,150,20,1)', bg: 'rgba(190,150,20,0.06)', label: 'За что платят',  desc: 'Рыночный спрос — профессии и навыки, которые ценятся.'     },
+            ] as const).map(item => (
+              <div key={item.label} style={{ background: item.bg, borderTop: `3px solid ${item.color}`, padding: '28px 22px 26px', borderRadius: 8 }}>
+                <div style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: item.color, marginBottom: 14, fontWeight: 700 }}>
+                  {item.label}
+                </div>
+                <div style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.7 }}>
+                  {item.desc}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Zone intersections */}
+          <div className="r-stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 16 }}>
+            {([
+              { name: 'Страсть',   eq: 'Любишь + Силён',   note: 'Увлечение, которое развито'    },
+              { name: 'Миссия',    eq: 'Любишь + Мир',      note: 'Смысл и предназначение'        },
+              { name: 'Профессия', eq: 'Силён + Платят',    note: 'Карьера на сильных сторонах'   },
+              { name: 'Призвание', eq: 'Мир + Платят',      note: 'Нужность и вознаграждение'     },
+            ]).map(z => (
+              <div key={z.name} style={{ border: '1px solid var(--line)', padding: '18px 22px', borderRadius: 8 }}>
+                <div style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 22, color: 'var(--ink)', marginBottom: 6 }}>{z.name}</div>
+                <div style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--red)', marginBottom: 8 }}>{z.eq}</div>
+                <div style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.5 }}>{z.note}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Ikigai center */}
+          <div className="r" style={{ border: '1px solid var(--red)', borderRadius: 8, padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 20 }}>
+            <div style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 24, color: 'var(--red)', flexShrink: 0 }}>Икигай</div>
+            <div style={{ width: 1, height: 32, background: 'var(--line-2)', flexShrink: 0 }} />
+            <div style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.6 }}>
+              Когда все четыре оси пересекаются — ты нашёл дело жизни. Тест покажет, насколько ты близко.
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="r" style={{ marginTop: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
+            <h2 className="h-2">Пройди тест<br />за <em>3 минуты</em>.</h2>
             <button className="btn" onClick={() => setPhase('quiz')} style={{ background: 'var(--red)', flexShrink: 0 }}>
               Начать тест <span className="btn__arr"><Arrow /></span>
             </button>
