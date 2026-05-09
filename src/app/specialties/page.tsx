@@ -48,7 +48,7 @@ function SpecialtiesInner() {
     return base.map(f => ({
       ...f,
       specialties: f.specialties.filter(s =>
-        s.exams.some(e => {
+        s.exams.every(e => {
           const subs = e.split(' / ').map(normalizeSubject)
           return subs.some(sub => examFilters.has(sub))
         })
