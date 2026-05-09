@@ -988,7 +988,8 @@ img, svg { display: block; max-width: 100%; }
   .stats__row { grid-template-columns: repeat(2, 1fr); }
   .stats__cell:nth-child(2) { border-right: none; }
   .stats__cell:nth-child(n+3) { border-top: 1px solid var(--line); }
-  .fac-row { grid-template-columns: 50px 1fr 1fr; }
+  .fac-row { grid-template-columns: 50px 1fr; }
+  .fac-row__desc { display: none; }
   .fac-row__cta { grid-column: 1 / -1; justify-self: start; }
   .docs-grid, .quotas { grid-template-columns: repeat(2, 1fr); }
   .doc-card:nth-child(3n) { border-right: 1px solid var(--line); }
@@ -1062,5 +1063,15 @@ img, svg { display: block; max-width: 100%; }
   .chat__chips  { display: none; }
   .chat__hint   { display: none; }
   .h-display    { font-size: clamp(36px,12vw,64px); }
+
+  /* Faculty rows: 2-col, hide description */
+  .fac-row { grid-template-columns: 36px 1fr; gap: 8px 12px; }
+  .fac-row__desc { display: none; }
+  .fac-row__cta { grid-column: 2; }
+
+  /* Ikigai diagrams: scale down, hide vertical side labels */
+  .ik-wrap { transform: scale(0.72); transform-origin: top center; margin-bottom: -90px; }
+  .ik-wrap--result { margin-bottom: -73px; }
+  .ik-label--side { display: none; }
   .lead         { font-size: 16px; }
 }

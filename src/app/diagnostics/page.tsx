@@ -130,7 +130,7 @@ const QUESTIONS: { q: string; opts: { t: string; types: HollandKey[] }[] }[] = [
 /* ── Static Ikigai diagram (intro) ─────────────── */
 function IkigaiDiagram() {
   return (
-    <div style={{ position: 'relative', width: 320, height: 320, flexShrink: 0 }}>
+    <div className="ik-wrap" style={{ position: 'relative', width: 320, height: 320, flexShrink: 0 }}>
       <svg viewBox="0 0 320 320" width="320" height="320" aria-hidden="true" style={{ overflow: 'visible' }}>
         <circle cx="160" cy="112" r="95" fill="rgba(200,16,46,0.13)" />
         <circle cx="222" cy="186" r="95" fill="rgba(34,140,60,0.10)" />
@@ -139,10 +139,10 @@ function IkigaiDiagram() {
         <circle cx="160" cy="186" r="30" fill="var(--ink)" />
         <text x="160" y="191" textAnchor="middle" fill="white" fontFamily="Georgia,serif" fontStyle="italic" fontSize="12">ikigai</text>
       </svg>
-      <div style={{ position:'absolute', top:-12, left:'50%', transform:'translateX(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'var(--red)', whiteSpace:'nowrap' }}>ЧТО ЛЮБИШЬ</div>
-      <div style={{ position:'absolute', top:'50%', right:-52, transform:'translateY(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'#2a7a3a', writingMode:'vertical-rl' }}>В ЧЁМ СИЛЁН</div>
-      <div style={{ position:'absolute', bottom:-14, left:'50%', transform:'translateX(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'#2050a0', whiteSpace:'nowrap' }}>ЧТО НУЖНО МИРУ</div>
-      <div style={{ position:'absolute', top:'50%', left:-56, transform:'translateY(-50%) rotate(180deg)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'#a07820', writingMode:'vertical-rl' }}>ЗА ЧТО ПЛАТЯТ</div>
+      <div className="ik-label ik-label--top" style={{ position:'absolute', top:-12, left:'50%', transform:'translateX(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'var(--red)', whiteSpace:'nowrap' }}>ЧТО ЛЮБИШЬ</div>
+      <div className="ik-label ik-label--side" style={{ position:'absolute', top:'50%', right:-52, transform:'translateY(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'#2a7a3a', writingMode:'vertical-rl' }}>В ЧЁМ СИЛЁН</div>
+      <div className="ik-label ik-label--bot" style={{ position:'absolute', bottom:-14, left:'50%', transform:'translateX(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'#2050a0', whiteSpace:'nowrap' }}>ЧТО НУЖНО МИРУ</div>
+      <div className="ik-label ik-label--side" style={{ position:'absolute', top:'50%', left:-56, transform:'translateY(-50%) rotate(180deg)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'#a07820', writingMode:'vertical-rl' }}>ЗА ЧТО ПЛАТЯТ</div>
     </div>
   )
 }
@@ -152,7 +152,7 @@ function IkigaiResultDiagram({ love, good, world, paid }: { love: number; good: 
   const b = 0.07
   const s = 0.38
   return (
-    <div style={{ position: 'relative', width: 260, height: 260, flexShrink: 0 }}>
+    <div className="ik-wrap ik-wrap--result" style={{ position: 'relative', width: 260, height: 260, flexShrink: 0 }}>
       <svg viewBox="0 0 260 260" width="260" height="260" aria-hidden="true" style={{ overflow: 'visible' }}>
         <circle cx="130" cy="88"  r="78" fill={`rgba(200,16,46,${b + love * s})`}  />
         <circle cx="182" cy="160" r="78" fill={`rgba(34,140,60,${b + good * s})`}  />
@@ -161,10 +161,10 @@ function IkigaiResultDiagram({ love, good, world, paid }: { love: number; good: 
         <circle cx="130" cy="160" r="22" fill="rgba(255,255,255,0.10)" />
         <text x="130" y="165" textAnchor="middle" fill="white" fontFamily="Georgia,serif" fontStyle="italic" fontSize="10" opacity="0.75">ikigai</text>
       </svg>
-      <div style={{ position:'absolute', top:-14, left:'50%', transform:'translateX(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(220,80,80,0.85)', whiteSpace:'nowrap' }}>ЧТО ЛЮБИШЬ</div>
-      <div style={{ position:'absolute', top:'50%', right:-60, transform:'translateY(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(60,160,80,0.85)', writingMode:'vertical-rl' }}>В ЧЁМ СИЛЁН</div>
-      <div style={{ position:'absolute', bottom:-16, left:'50%', transform:'translateX(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(100,140,220,0.85)', whiteSpace:'nowrap' }}>ЧТО НУЖНО МИРУ</div>
-      <div style={{ position:'absolute', top:'50%', left:-68, transform:'translateY(-50%) rotate(180deg)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(190,150,20,0.85)', writingMode:'vertical-rl' }}>ЗА ЧТО ПЛАТЯТ</div>
+      <div className="ik-label ik-label--top" style={{ position:'absolute', top:-14, left:'50%', transform:'translateX(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(220,80,80,0.85)', whiteSpace:'nowrap' }}>ЧТО ЛЮБИШЬ</div>
+      <div className="ik-label ik-label--side" style={{ position:'absolute', top:'50%', right:-60, transform:'translateY(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(60,160,80,0.85)', writingMode:'vertical-rl' }}>В ЧЁМ СИЛЁН</div>
+      <div className="ik-label ik-label--bot" style={{ position:'absolute', bottom:-16, left:'50%', transform:'translateX(-50%)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(100,140,220,0.85)', whiteSpace:'nowrap' }}>ЧТО НУЖНО МИРУ</div>
+      <div className="ik-label ik-label--side" style={{ position:'absolute', top:'50%', left:-68, transform:'translateY(-50%) rotate(180deg)', fontFamily:'var(--mono)', fontSize:9, letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(190,150,20,0.85)', writingMode:'vertical-rl' }}>ЗА ЧТО ПЛАТЯТ</div>
     </div>
   )
 }
