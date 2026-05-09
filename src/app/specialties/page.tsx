@@ -25,7 +25,10 @@ function SpecialtiesInner() {
       f.specialties.forEach(s =>
         s.exams.forEach(e => {
           if (e.startsWith('Без ЕГЭ') || e.startsWith('Профессиональное')) return
-          e.split(' / ').forEach(sub => set.add(normalizeSubject(sub)))
+          e.split(' / ').forEach(sub => {
+            const norm = normalizeSubject(sub)
+            if (norm !== 'Русский язык') set.add(norm)
+          })
         })
       )
     )
@@ -48,7 +51,8 @@ function SpecialtiesInner() {
     return base.map(f => ({
       ...f,
       specialties: f.specialties.filter(s =>
-        s.exams.every(e => {
+        s.exams.some(e => {
+          if (e.startsWith('Без ЕГЭ') || e.startsWith('Профессиональное') || e.includes('Русский язык')) return false
           const subs = e.split(' / ').map(normalizeSubject)
           return subs.some(sub => examFilters.has(sub))
         })
