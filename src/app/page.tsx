@@ -6,6 +6,23 @@ import { useReveal } from '@/hooks/useReveal'
 import { Arrow } from '@/components/icons'
 import { FACULTIES } from '@/lib/data'
 
+const DEADLINE = new Date('2026-06-20T09:00:00')
+
+function useCountdown() {
+  const [left, setLeft] = useState(() => Math.max(0, DEADLINE.getTime() - Date.now()))
+  useEffect(() => {
+    const id = setInterval(() => setLeft(Math.max(0, DEADLINE.getTime() - Date.now())), 1000)
+    return () => clearInterval(id)
+  }, [])
+  return {
+    d: Math.floor(left / 86400000),
+    h: Math.floor((left % 86400000) / 3600000),
+    m: Math.floor((left % 3600000) / 60000),
+    s: Math.floor((left % 60000) / 1000),
+    done: left === 0,
+  }
+}
+
 function HeroChat() {
   const [step, setStep] = useState(0)
   const flow = [
@@ -51,6 +68,7 @@ function HeroChat() {
 
 export default function Home() {
   useReveal()
+  const { d, h, m, s, done } = useCountdown()
 
   return (
     <main className="page">
@@ -185,7 +203,17 @@ export default function Home() {
             </h2>
           </div>
           <div className="bigcta__side r">
-            <div className="bigcta__date">До старта <b>56 дней</b></div>
+            <div>
+              <div className="bigcta__date">{done ? 'Приём документов открыт!' : 'До начала приёма документов'}</div>
+              {!done && (
+                <div className="countdown">
+                  <div className="cdown"><span className="cdown__n">{String(d).padStart(2, '0')}</span><span className="cdown__l">дней</span></div>
+                  <div className="cdown"><span className="cdown__n">{String(h).padStart(2, '0')}</span><span className="cdown__l">часов</span></div>
+                  <div className="cdown"><span className="cdown__n">{String(m).padStart(2, '0')}</span><span className="cdown__l">минут</span></div>
+                  <div className="cdown"><span className="cdown__n">{String(s).padStart(2, '0')}</span><span className="cdown__l">секунд</span></div>
+                </div>
+              )}
+            </div>
             <Link href="/admission" className="btn">
               Условия поступления <span className="btn__arr"><Arrow /></span>
             </Link>

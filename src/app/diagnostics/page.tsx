@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useReveal } from '@/hooks/useReveal'
 import { Arrow } from '@/components/icons'
@@ -167,12 +167,23 @@ function IkigaiResultDiagram({ love, good, world, paid }: { love: number; good: 
 }
 
 /* ── Main page ──────────────────────────────────── */
+const LS_KEY = 'diag_result_v1'
+
 export default function Diagnostics() {
   useReveal()
   const [phase, setPhase] = useState<'intro' | 'quiz' | 'result'>('intro')
   const [level, setLevel] = useState<'uni' | 'spo' | null>(null)
   const [step, setStep] = useState(0)
   const [scores, setScores] = useState<Record<HollandKey, number>>({ R:0, I:0, A:0, S:0, E:0, C:0 })
+  const [savedResult, setSavedResult] = useState<{ dominant: HollandKey; zoneName: string } | null>(null)
+
+  /* load saved result on mount */
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(LS_KEY)
+      if (raw) setSavedResult(JSON.parse(raw))
+    } catch { /* ignore */ }
+  }, [])
 
   function pick(types: HollandKey[]) {
     const next = { ...scores }
@@ -187,6 +198,8 @@ export default function Diagnostics() {
     setLevel(null)
     setStep(0)
     setScores({ R:0, I:0, A:0, S:0, E:0, C:0 })
+    try { localStorage.removeItem(LS_KEY) } catch { /* ignore */ }
+    setSavedResult(null)
   }
 
   /* ── Compute results ────────────────────────── */
@@ -216,6 +229,16 @@ export default function Diagnostics() {
   const zoneKey = [sorted[0], sorted[1]].sort().join('-')
   const zone = IKIGAI_ZONE[zoneKey] ?? { name: 'Икигай', desc: 'Ты гармонично развит по всем направлениям.' }
 
+  /* persist result when quiz finishes */
+  useEffect(() => {
+    if (phase === 'result') {
+      try {
+        localStorage.setItem(LS_KEY, JSON.stringify({ dominant, zoneName: zone.name }))
+        setSavedResult({ dominant, zoneName: zone.name })
+      } catch { /* ignore */ }
+    }
+  }, [phase, dominant, zone.name])
+
   /* ──────────────── INTRO ──────────────────── */
   if (phase === 'intro') return (
     <main className="page">
@@ -239,9 +262,21 @@ export default function Diagnostics() {
                   </span>
                 ))}
               </div>
-              <button className="btn r" onClick={() => setPhase('quiz')}>
-                Начать тест <span className="btn__arr"><Arrow /></span>
-              </button>
+              <div className="r" style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                <button className="btn" onClick={() => setPhase('quiz')}>
+                  Начать тест <span className="btn__arr"><Arrow /></span>
+                </button>
+                {savedResult && (
+                  <button
+                    className="btn btn--ghost"
+                    onClick={() => setPhase('result')}
+                    style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+                  >
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--red)', display: 'inline-block', flexShrink: 0 }} />
+                    Твой результат: {savedResult.dominant} · {savedResult.zoneName}
+                  </button>
+                )}
+              </div>
             </div>
             <div className="r" style={{ display: 'flex', justifyContent: 'center', padding: '0 40px' }}>
               <IkigaiDiagram />
@@ -252,7 +287,7 @@ export default function Diagnostics() {
 
       <section style={{ background: 'var(--ink)', color: 'var(--paper)', padding: 'clamp(80px,10vw,120px) 0' }}>
         <div className="wrap">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, marginBottom: 64, alignItems: 'start' }} className="r">
+          <div className="diag-method r">
             <div>
               <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.40)', marginBottom: 20 }}>
                 <b style={{ color: 'var(--red)' }}>02</b> Методология
@@ -269,7 +304,7 @@ export default function Diagnostics() {
             </p>
           </div>
 
-          <div className="r-stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: 1 }}>
+          <div className="diag-h-grid r-stagger">
             {(Object.entries(HOLLAND) as [HollandKey, typeof HOLLAND[HollandKey]][]).map(([key, h]) => (
               <div key={key} style={{ background: 'var(--ink-2)', padding: '28px 20px 24px', borderRadius: 2 }}>
                 <div style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 48, color: 'var(--red)', lineHeight: 1, marginBottom: 14 }}>{key}</div>
@@ -303,7 +338,7 @@ export default function Diagnostics() {
           </div>
 
           {/* 4 axis cards */}
-          <div className="r-stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 16 }}>
+          <div className="diag-i-grid r-stagger">
             {([
               { color: 'rgba(200,16,46,1)',  bg: 'rgba(200,16,46,0.06)',  label: 'Что любишь',     desc: 'Твои страсти и интересы — то, что зажигает и вдохновляет.' },
               { color: 'rgba(34,140,60,1)',  bg: 'rgba(34,140,60,0.06)',  label: 'В чём силён',    desc: 'Твои таланты и навыки — то, что получается лучше всего.'   },
@@ -322,7 +357,7 @@ export default function Diagnostics() {
           </div>
 
           {/* Zone intersections */}
-          <div className="r-stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 16 }}>
+          <div className="diag-i-grid r-stagger">
             {([
               { name: 'Страсть',   eq: 'Любишь + Силён',   note: 'Увлечение, которое развито'    },
               { name: 'Миссия',    eq: 'Любишь + Мир',      note: 'Смысл и предназначение'        },
@@ -446,7 +481,7 @@ export default function Diagnostics() {
           </div>
 
           {/* Main result row */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 48, flexWrap: 'wrap', marginBottom: 56 }}>
+          <div className="diag-result">
             {/* Holland */}
             <div className="r">
               <div style={{ display: 'flex', alignItems: 'flex-end', gap: 20, marginBottom: 24 }}>
@@ -487,7 +522,7 @@ export default function Diagnostics() {
           </div>
 
           {/* Ikigai axis bars */}
-          <div className="r" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px 48px', marginBottom: 56 }}>
+          <div className="diag-bars r">
             {(Object.keys(IKIGAI_AXES) as IkigaiAxis[]).map(ax => (
               <div key={ax}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>

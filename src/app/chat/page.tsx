@@ -26,6 +26,8 @@ const DIAG_ANSWERS = [
   ['Стабильная карьера', 'Интересные задачи, пусть с риском'],
 ]
 
+const CHAT_LS_KEY = 'chat_history_v1'
+
 function fmt(d: Date) {
   return d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
 }
@@ -70,6 +72,34 @@ function ChatInner() {
       bodyRef.current.scrollTop = bodyRef.current.scrollHeight
     }
   }, [messages, typing])
+
+  /* Restore chat history from localStorage (only in plain chat mode) */
+  useEffect(() => {
+    if (hollandMode || diagMode) return
+    try {
+      const saved = localStorage.getItem(CHAT_LS_KEY)
+      if (!saved) return
+      const { messages: savedMsgs, history: savedHistory, nextId } = JSON.parse(saved) as {
+        messages: (Omit<Message, 'time'> & { time: string })[]
+        history: { role: string; content: string }[]
+        nextId: number
+      }
+      const restored = savedMsgs.map(m => ({ ...m, time: new Date(m.time) }))
+      setMessages(restored)
+      historyRef.current = savedHistory ?? []
+      idRef.current = nextId ?? restored.length
+    } catch { /* ignore corrupt data */ }
+  }, [hollandMode, diagMode])
+
+  /* Persist chat history whenever messages change */
+  useEffect(() => {
+    if (hollandMode || diagMode) return
+    if (messages.length <= 1) return
+    try {
+      const toSave = messages.map(m => ({ ...m, time: m.time instanceof Date ? m.time.toISOString() : m.time }))
+      localStorage.setItem(CHAT_LS_KEY, JSON.stringify({ messages: toSave, history: historyRef.current, nextId: idRef.current }))
+    } catch { /* ignore */ }
+  }, [messages, hollandMode, diagMode])
 
   const reply = useCallback(async (userText: string) => {
     historyRef.current = [...historyRef.current, { role: 'user', content: userText }]
@@ -215,6 +245,7 @@ function ChatInner() {
                   idRef.current = 1
                   historyRef.current = []
                   setDiagStep(0)
+                  localStorage.removeItem(CHAT_LS_KEY)
                 }}
               >
                 Очистить

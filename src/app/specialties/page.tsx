@@ -7,17 +7,54 @@ import { useReveal } from '@/hooks/useReveal'
 import { Arrow, Plus } from '@/components/icons'
 import { FACULTIES } from '@/lib/data'
 
+function normalizeSubject(raw: string) {
+  return raw.replace(/\s*\(профильная\)/i, '').trim()
+}
+
 function SpecialtiesInner() {
   useReveal()
   const searchParams = useSearchParams()
   const initial = searchParams.get('f') || 'all'
   const [tab, setTab] = useState(initial)
   const [open, setOpen] = useState<string | null>(null)
+  const [examFilters, setExamFilters] = useState<Set<string>>(new Set())
+
+  const ALL_EXAM_SUBJECTS = useMemo(() => {
+    const set = new Set<string>()
+    FACULTIES.forEach(f =>
+      f.specialties.forEach(s =>
+        s.exams.forEach(e => {
+          if (e.startsWith('Без ЕГЭ') || e.startsWith('Профессиональное')) return
+          e.split(' / ').forEach(sub => set.add(normalizeSubject(sub)))
+        })
+      )
+    )
+    return [...set].sort()
+  }, [])
+
+  const toggleExam = (sub: string) => {
+    setExamFilters(prev => {
+      const next = new Set(prev)
+      if (next.has(sub)) next.delete(sub)
+      else next.add(sub)
+      return next
+    })
+    setOpen(null)
+  }
 
   const list = useMemo(() => {
-    if (tab === 'all') return FACULTIES
-    return FACULTIES.filter(f => f.id === tab)
-  }, [tab])
+    const base = tab === 'all' ? FACULTIES : FACULTIES.filter(f => f.id === tab)
+    if (examFilters.size === 0) return base
+    return base.map(f => ({
+      ...f,
+      specialties: f.specialties.filter(s =>
+        s.exams.some(e => {
+          const subs = e.split(' / ').map(normalizeSubject)
+          return subs.some(sub => examFilters.has(sub))
+        })
+      ),
+    })).filter(f => f.specialties.length > 0)
+  }, [tab, examFilters])
 
   return (
     <main className="page">
@@ -64,8 +101,33 @@ function SpecialtiesInner() {
         </div>
       </div>
 
-      <section style={{ padding: '40px 0 80px' }}>
+      <section style={{ padding: '0 0 80px' }}>
         <div className="wrap">
+          <div className="exam-filter">
+            <span className="exam-filter__label">ЕГЭ:</span>
+            {ALL_EXAM_SUBJECTS.map(sub => (
+              <button
+                key={sub}
+                className={`exam-chip${examFilters.has(sub) ? ' is-active' : ''}`}
+                onClick={() => toggleExam(sub)}
+              >
+                {sub}
+              </button>
+            ))}
+            {examFilters.size > 0 && (
+              <button
+                className="exam-chip exam-chip--reset"
+                onClick={() => { setExamFilters(new Set()); setOpen(null) }}
+              >
+                Сбросить
+              </button>
+            )}
+          </div>
+
+          {list.length === 0 && (
+            <div className="exam-noresult">Нет специальностей, подходящих под выбранный фильтр</div>
+          )}
+
           {list.map(f => (
             <div key={f.id} className="fac-section">
               <div className="fac-section__head r">
