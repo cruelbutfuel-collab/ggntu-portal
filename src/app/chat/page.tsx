@@ -103,7 +103,7 @@ function ChatInner() {
 
   const reply = useCallback(async (userText: string) => {
     historyRef.current = [...historyRef.current, { role: 'user', content: userText }]
-    if (historyRef.current.length > 20) historyRef.current = historyRef.current.slice(-20)
+    if (historyRef.current.length > 10) historyRef.current = historyRef.current.slice(-10)
     setTyping(true)
     try {
       const res = await fetch('/api/chat', {

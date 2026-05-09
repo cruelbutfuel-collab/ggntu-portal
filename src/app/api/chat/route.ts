@@ -156,35 +156,51 @@ export async function POST(req: NextRequest) {
   }
 
   /* Groq API */
-  try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
-        max_tokens: 800,
-        messages: [{ role: 'system', content: SYSTEM }, ...messages],
-      }),
-    })
+  async function callGroq(attempt = 0): Promise<NextResponse> {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 28_000)
+    try {
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'llama-3.1-8b-instant',
+          max_tokens: 800,
+          messages: [{ role: 'system', content: SYSTEM }, ...messages.slice(-10)],
+        }),
+      })
+      clearTimeout(timer)
 
-    if (!res.ok) {
-      const err = await res.json() as { error?: { message?: string } }
-      throw new Error(err.error?.message ?? `HTTP ${res.status}`)
+      if (res.status === 429 && attempt === 0) {
+        await new Promise(r => setTimeout(r, 2000))
+        return callGroq(1)
+      }
+
+      if (!res.ok) {
+        const err = await res.json() as { error?: { message?: string } }
+        throw new Error(err.error?.message ?? `HTTP ${res.status}`)
+      }
+
+      const data = await res.json() as { choices: { message: { content: string } }[] }
+      let raw = data.choices[0].message.content
+      raw = raw.replace(/<think>[\s\S]*?<\/think>\s*/g, '')
+      raw = raw.replace(/\*\*(.*?)\*\*/g, '$1')
+      raw = raw.replace(/\*([^*\n]+)\*/g, '$1')
+      raw = raw.replace(/^#{1,6}\s+/gm, '')
+      const clean = raw.replace(/[^\x20-\x7EЀ-ӿ–—\s]/g, '')
+      return NextResponse.json({ reply: formatReply(clean) })
+    } catch (e) {
+      clearTimeout(timer)
+      const msg = (e as Error).message
+      console.error('Groq error:', msg)
+      if (msg.includes('rate') || msg.includes('429'))
+        return NextResponse.json({ reply: 'Алия перегружена — попробуй через несколько секунд.' })
+      return NextResponse.json({ reply: 'Извини, не смогла ответить. Попробуй ещё раз.' })
     }
-
-    const data = await res.json() as { choices: { message: { content: string } }[] }
-    let raw = data.choices[0].message.content
-    raw = raw.replace(/<think>[\s\S]*?<\/think>\s*/g, '')
-    raw = raw.replace(/\*\*(.*?)\*\*/g, '$1')
-    raw = raw.replace(/\*([^*\n]+)\*/g, '$1')
-    raw = raw.replace(/^#{1,6}\s+/gm, '')
-    const clean = raw.replace(/[^\x20-\x7EЀ-ӿ–—\s]/g, '')
-    return NextResponse.json({ reply: formatReply(clean) })
-  } catch (e) {
-    console.error('Groq error:', (e as Error).message)
-    return NextResponse.json({ reply: 'Извини, не смогла ответить. Попробуй ещё раз.' })
   }
+  return callGroq()
 }
