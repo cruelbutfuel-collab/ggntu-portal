@@ -11,13 +11,37 @@ type HollandKey = 'R' | 'I' | 'A' | 'S' | 'E' | 'C'
 type IkigaiAxis = 'love' | 'good' | 'world' | 'paid'
 
 /* ── Holland ───────────────────────────────────── */
-const HOLLAND: Record<HollandKey, { label: string; desc: string; facIds: string[] }> = {
-  R: { label: 'Реалист',         desc: 'Техника, инженерия, физический труд',  facIds: ['ie', 'inig']     },
-  I: { label: 'Исследователь',   desc: 'Наука, анализ, исследования',           facIds: ['inig']           },
-  A: { label: 'Художник',        desc: 'Творчество, дизайн, архитектура',       facIds: ['isaid']          },
-  S: { label: 'Социальный',      desc: 'Люди, управление, коммуникации',        facIds: ['iceitp']         },
-  E: { label: 'Предприниматель', desc: 'Бизнес, лидерство, менеджмент',         facIds: ['iceitp']         },
-  C: { label: 'Системный',       desc: 'Данные, IT, точность, структура',       facIds: ['ipit', 'iceitp'] },
+const HOLLAND: Record<HollandKey, { label: string; desc: string; facIds: string[]; specCodes: string[] }> = {
+  R: {
+    label: 'Реалист', desc: 'Техника, инженерия, физический труд',
+    facIds: ['ie', 'inig'],
+    specCodes: ['13.03.01','13.03.02','15.03.04','15.03.02','23.03.01','27.03.04','21.03.01','21.05.06','20.03.01','23.03.02','23.03.03'],
+  },
+  I: {
+    label: 'Исследователь', desc: 'Наука, анализ, исследования',
+    facIds: ['inig'],
+    specCodes: ['21.05.02','21.05.03','18.03.01','05.03.06','05.03.03','21.03.01','20.03.01'],
+  },
+  A: {
+    label: 'Художник', desc: 'Творчество, дизайн, архитектура',
+    facIds: ['isaid', 'iceitp'],
+    specCodes: ['07.03.01','07.03.03','08.03.01','08.05.01','35.03.10','42.03.05','21.03.02'],
+  },
+  S: {
+    label: 'Социальный', desc: 'Люди, управление, коммуникации',
+    facIds: ['iceitp'],
+    specCodes: ['38.03.04','40.03.01','38.03.02','42.03.05','49.03.04'],
+  },
+  E: {
+    label: 'Предприниматель', desc: 'Бизнес, лидерство, менеджмент',
+    facIds: ['iceitp'],
+    specCodes: ['38.03.01','38.03.02','38.05.01','38.05.02','38.03.04'],
+  },
+  C: {
+    label: 'Системный', desc: 'Данные, IT, точность, структура',
+    facIds: ['ipit', 'iceitp'],
+    specCodes: ['09.03.04','09.03.01','09.03.02','10.03.01','11.03.02','09.03.03','38.03.05'],
+  },
 }
 
 /* ── Ikigai axes ───────────────────────────────── */
@@ -610,7 +634,12 @@ export default function Diagnostics() {
                     {fac.short} · {fac.name}
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }} className="r-stagger">
-                    {fac.specialties.slice(0, 6).map((sp, i) => {
+                    {(level === 'spo'
+                      ? fac.specialties.slice(0, 6)
+                      : fac.specialties
+                          .filter(sp => info.specCodes.includes(sp.code))
+                          .sort((a, b) => info.specCodes.indexOf(a.code) - info.specCodes.indexOf(b.code))
+                    ).map((sp, i) => {
                       const match = Math.max(68, baseMatch - i * 5)
                       const exams = sp.exams
                         .filter(e => !e.includes('Русский язык'))
