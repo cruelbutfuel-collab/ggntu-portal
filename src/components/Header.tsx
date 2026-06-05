@@ -34,7 +34,7 @@ export default function Header() {
       <div className="wrap header__row">
         <Link href="/" className="brand">
           <Image
-            src="/logo.svg"
+            src="/logo.png"
             alt="ГГНТУ"
             width={52}
             height={52}

@@ -31,9 +31,9 @@ export const metadata: Metadata = {
   title: 'ГГНТУ — Портал абитуриента · Алия',
   description: 'Портал абитуриента ГГНТУ с виртуальным ассистентом Алия',
   icons: {
-    icon: '/logo.svg',
-    shortcut: '/logo.svg',
-    apple: '/logo.svg',
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
   },
 }
 
