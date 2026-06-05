@@ -127,6 +127,38 @@ const QUESTIONS: { q: string; opts: { t: string; types: HollandKey[] }[] }[] = [
   },
 ]
 
+/* ── Careers per specialty code ────────────────── */
+const SPEC_CAREERS: Record<string, string[]> = {
+  '09.03.01': ['Backend-разработчик', 'DevOps-инженер', 'Системный архитектор'],
+  '09.03.02': ['Веб-разработчик', 'BI-аналитик', 'Product Manager'],
+  '09.03.03': ['Аналитик данных', '1С-разработчик', 'Цифровой консультант'],
+  '09.03.04': ['Software Engineer', 'iOS/Android разработчик', 'Tech Lead'],
+  '10.03.01': ['Специалист ИБ', 'Пентестер', 'Аналитик SOC'],
+  '11.03.02': ['Сетевой инженер', 'Системный администратор', 'Телеком-аналитик'],
+  '38.03.01': ['Финансовый аналитик', 'Банкир', 'Экономист-консультант'],
+  '38.03.02': ['Руководитель проектов', 'HR-директор', 'Предприниматель'],
+  '38.03.04': ['Госслужащий', 'Муниципальный управляющий', 'Советник'],
+  '38.03.05': ['IT-менеджер', 'Бизнес-аналитик', 'Product Owner'],
+  '38.05.01': ['Финансовый следователь', 'Аудитор', 'Специалист по комплаенс'],
+  '38.05.02': ['Таможенный инспектор', 'Брокер ВЭД', 'Логист-аналитик'],
+  '40.03.01': ['Юрист', 'Адвокат', 'Нотариус'],
+  '07.03.01': ['Архитектор', 'Урбанист', 'BIM-специалист'],
+  '07.03.03': ['Дизайнер среды', 'Интерьер-дизайнер', 'Арт-директор'],
+  '08.03.01': ['Инженер-строитель', 'Прораб', 'Сметчик'],
+  '08.05.01': ['Конструктор зданий', 'Инженер-расчётчик', 'Проектировщик'],
+  '35.03.10': ['Ландшафтный дизайнер', 'Градостроитель', 'Эколог-планировщик'],
+  '21.03.01': ['Буровой инженер', 'Инженер-нефтяник', 'Технолог добычи'],
+  '21.05.06': ['Механик нефтепромысла', 'Инженер по разработке', 'Промышленный инженер'],
+  '18.03.01': ['Технолог-химик', 'Инженер НПЗ', 'Специалист R&D'],
+  '21.05.02': ['Геолог', 'Гидрогеолог', 'Специалист по разведке'],
+  '20.03.01': ['Инженер по охране труда', 'Специалист промбезопасности', 'Эколог'],
+  '13.03.01': ['Теплоэнергетик', 'Инженер ТЭС', 'Энергоаудитор'],
+  '13.03.02': ['Энергетик', 'Инженер-электрик', 'Специалист Smart Grid'],
+  '15.03.04': ['Инженер АСУ ТП', 'Программист ПЛК', 'Автоматизатор производств'],
+  '23.03.01': ['Логист', 'Транспортный менеджер', 'Аналитик цепей поставок'],
+  '27.03.04': ['Инженер систем управления', 'Разработчик встроенных систем', 'IoT-специалист'],
+}
+
 /* ── Static Ikigai diagram (intro) ─────────────── */
 function IkigaiDiagram() {
   return (
@@ -545,57 +577,121 @@ export default function Diagnostics() {
 
           {/* CTA to chat */}
           <div style={{ paddingTop: 48, borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
-            <p style={{ fontSize: 'clamp(15px,1.1vw,18px)', color: 'rgba(255,255,255,0.60)', maxWidth: 520, lineHeight: 1.6, margin: 0 }}>
-              Это общий профиль. Алия проведёт персональный разбор и подберёт специальности именно под твои предметы и цели.
-            </p>
+            <div>
+              <div style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 10 }}>
+                Следующий шаг
+              </div>
+              <p style={{ fontSize: 'clamp(15px,1.1vw,18px)', color: 'rgba(255,255,255,0.75)', maxWidth: 480, lineHeight: 1.55, margin: 0, fontFamily: 'var(--serif)' }}>
+                Знаешь свои баллы ЕГЭ?<br />
+                <span style={{ fontSize: 'clamp(13px,1vw,15px)', fontFamily: 'var(--sans)', color: 'rgba(255,255,255,0.45)', fontStyle: 'normal' }}>
+                  Скажи Алие — она рассчитает шансы на бюджет по каждой из этих специальностей и напомнит о ключевых сроках.
+                </span>
+              </p>
+            </div>
             <Link
               href={`/chat?holland=${dominant}&label=${encodeURIComponent(info.label)}&zone=${encodeURIComponent(zone.name)}&level=${level ?? 'uni'}`}
               className="btn"
               style={{ background: 'var(--red)', flexShrink: 0 }}
             >
-              Подобрать со мной <span className="btn__arr"><Arrow /></span>
+              Проверить шансы на бюджет <span className="btn__arr"><Arrow /></span>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Light: Recommended specialties */}
-      <section style={{ padding: 'clamp(60px,8vw,100px) 0' }}>
-        <div className="wrap">
-          <div style={{ marginBottom: 48 }}>
-            <div className="eyebrow r" style={{ marginBottom: 16 }}>Подходящие направления ГГНТУ</div>
-            <h2 className="h-2 r">
-              {faculties.length === 1 ? faculties[0].name : `${faculties.map(f => f.short).join(' и ')} — твои институты`}
-            </h2>
-          </div>
-
-          {faculties.map(fac => (
-            <div key={fac.id} style={{ marginBottom: 48 }}>
-              <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 20 }}>
-                {fac.short} · {fac.name}
+      {/* Light: Match score specialties */}
+      {(() => {
+        const baseMatch = Math.round(72 + (scores[dominant] / QUESTIONS.length) * 26)
+        return (
+          <section style={{ padding: 'clamp(60px,8vw,100px) 0' }}>
+            <div className="wrap">
+              <div style={{ marginBottom: 48 }}>
+                <div className="eyebrow r" style={{ marginBottom: 16 }}>Подходящие направления ГГНТУ</div>
+                <h2 className="h-2 r">
+                  {faculties.length === 1 ? faculties[0].name : `${faculties.map(f => f.short).join(' и ')} — твои институты`}
+                </h2>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }} className="r-stagger">
-                {fac.specialties.slice(0, 6).map(sp => (
-                  <div key={sp.code} style={{ padding: '20px 22px', border: '1px solid var(--line)', borderRadius: 8 }}>
-                    <div style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 8 }}>{sp.code}</div>
-                    <div style={{ fontFamily: 'var(--serif)', fontSize: 18, letterSpacing: '-0.01em', marginBottom: 8 }}>{sp.name}</div>
-                    <div style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.5 }}>{sp.desc}</div>
+
+              {faculties.map(fac => (
+                <div key={fac.id} style={{ marginBottom: 56 }}>
+                  <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 24 }}>
+                    {fac.short} · {fac.name}
                   </div>
-                ))}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }} className="r-stagger">
+                    {fac.specialties.slice(0, 6).map((sp, i) => {
+                      const match = Math.max(68, baseMatch - i * 5)
+                      const exams = sp.exams
+                        .filter(e => !e.includes('Русский язык'))
+                        .map(e => e.replace(' (профильная)', ''))
+                      const careers = SPEC_CAREERS[sp.code] ?? []
+                      const chatHref = `/chat?holland=${dominant}&label=${encodeURIComponent(info.label)}&zone=${encodeURIComponent(zone.name)}&level=${level ?? 'uni'}&spec=${encodeURIComponent(sp.name)}`
+                      return (
+                        <div key={sp.code} style={{ padding: '22px 24px 20px', border: '1px solid var(--line)', borderRadius: 8, display: 'flex', flexDirection: 'column', gap: 14 }}>
+                          {/* header row */}
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+                            <div style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.1em', color: 'var(--muted)' }}>{sp.code}</div>
+                            <div style={{ fontFamily: 'var(--mono)', fontSize: 11, fontWeight: 700, color: 'var(--red)', whiteSpace: 'nowrap' }}>{match}%</div>
+                          </div>
+
+                          {/* match bar */}
+                          <div style={{ height: 2, background: 'var(--line-2)', borderRadius: 99 }}>
+                            <div style={{ height: '100%', width: `${match}%`, background: 'var(--red)', borderRadius: 99, opacity: 0.7 }} />
+                          </div>
+
+                          {/* name */}
+                          <div style={{ fontFamily: 'var(--serif)', fontSize: 18, letterSpacing: '-0.01em', lineHeight: 1.2 }}>{sp.name}</div>
+
+                          {/* exams */}
+                          {exams.length > 0 && (
+                            <div>
+                              <div style={{ fontFamily: 'var(--mono)', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted-2)', marginBottom: 6 }}>ЕГЭ</div>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+                                {exams.map(e => (
+                                  <span key={e} style={{ fontFamily: 'var(--mono)', fontSize: 10, padding: '3px 8px', border: '1px solid var(--line-2)', borderRadius: 999, color: 'var(--ink)' }}>
+                                    {e}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* careers */}
+                          {careers.length > 0 && (
+                            <div>
+                              <div style={{ fontFamily: 'var(--mono)', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted-2)', marginBottom: 6 }}>Карьера</div>
+                              <div style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>
+                                {careers.join(' · ')}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* ask aliya */}
+                          <Link
+                            href={chatHref}
+                            style={{ marginTop: 'auto', paddingTop: 14, borderTop: '1px solid var(--line)', fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--red)', display: 'flex', alignItems: 'center', gap: 6 }}
+                          >
+                            Спросить Алию об этой специальности
+                            <Arrow s={10} />
+                          </Link>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
+
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 8 }}>
+                <Link href="/specialties" className="btn">
+                  Все специальности <span className="btn__arr"><Arrow /></span>
+                </Link>
+                <button className="btn btn--ghost" onClick={restart}>
+                  Пройти заново
+                </button>
               </div>
             </div>
-          ))}
-
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 16 }}>
-            <Link href="/specialties" className="btn">
-              Все специальности <span className="btn__arr"><Arrow /></span>
-            </Link>
-            <button className="btn btn--ghost" onClick={restart}>
-              Пройти заново
-            </button>
-          </div>
-        </div>
-      </section>
+          </section>
+        )
+      })()}
     </main>
   )
 }
