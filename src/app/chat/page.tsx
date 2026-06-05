@@ -144,7 +144,7 @@ function ChatInner() {
       const zoneStr = hollandZone ? `, Икигай-зона — ${hollandZone}` : ''
       const levelStr = hollandLevel === 'spo' ? 'колледж ГГНТУ (СПО, без ЕГЭ)' : 'университет (бакалавриат/специалитет)'
       const apiText = hollandSpec
-        ? `Меня заинтересовала специальность "${hollandSpec}". Мой тип по Holland Codes — ${hollandKey} (${hollandLabel})${zoneStr}. Расскажи подробнее.`
+        ? `Меня заинтересовала специальность "${hollandSpec}". Мой тип по Holland Codes — ${hollandKey}, label: ${hollandLabel || hollandKey}${zoneStr}. Расскажи подробнее.`
         : `Я прошёл тест профориентации. Мой тип личности по Holland Codes — ${hollandKey} (${hollandLabel})${zoneStr}. Я хочу поступать в ${levelStr}. Подбери мне 3-4 самых подходящих специальности с обоснованием, почему именно они подходят для этого типа личности и Икигай-зоны.`
       const t = setTimeout(() => {
         reply(apiText)
