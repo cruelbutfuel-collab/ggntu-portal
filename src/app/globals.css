@@ -129,29 +129,13 @@ img, svg { display: block; max-width: 100%; }
   align-items: center;
   gap: 14px;
 }
-.brand__mark {
-  width: 44px; height: 44px;
-  display: grid; place-items: center;
-  background: var(--ink);
-  color: var(--paper);
-  font-family: var(--serif);
-  font-style: italic;
-  font-weight: 500;
-  font-size: 22px;
-  position: relative;
-  overflow: hidden;
+.brand__logo {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
   transition: transform .4s var(--e-out);
 }
-.brand__mark::after {
-  content: "";
-  position: absolute; inset: auto 0 0 0;
-  height: 4px;
-  background: var(--red);
-  transform: translateY(100%);
-  transition: transform .4s var(--e-out);
-}
-.brand:hover .brand__mark::after { transform: translateY(0); }
-.brand:hover .brand__mark { transform: rotate(-3deg); }
+.brand:hover .brand__logo { transform: rotate(-4deg) scale(1.06); }
 .brand__text { line-height: 1; }
 .brand__name {
   font-family: var(--serif);

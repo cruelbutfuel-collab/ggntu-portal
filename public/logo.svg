@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" fill="none">
+  <defs>
+    <path id="arc-bottom" d="M 42,260 A 198,198 0 0,0 438,260"/>
+    <path id="arc-left"   d="M 42,240 A 198,198 0 0,1 240,42"/>
+    <path id="arc-right"  d="M 240,42 A 198,198 0 0,1 438,240"/>
+  </defs>
+
+  <!-- outer ring -->
+  <circle cx="240" cy="240" r="220" fill="none" stroke="#1e3358" stroke-width="2.5"/>
+  <circle cx="240" cy="240" r="210" fill="none" stroke="#1e3358" stroke-width="0.8"/>
+
+  <!-- ══ CASTLE / BUILDING SILHOUETTE ══ -->
+  <path fill="#1e3358" d="
+    M 78,142
+    L 78,108 L 84,108 L 84,102 L 90,102 L 90,108 L 96,108 L 96,102 L 102,102
+    L 102,94  L 97,94  L 97,78  L 93,78  L 93,62
+    L 88,62  L 88,58  L 94,46  L 94,40
+    L 108,44 L 94,50  L 94,62
+    L 100,62 L 100,92
+    L 110,92 L 110,88 L 116,88 L 116,92
+    L 126,92 L 126,88 L 132,88 L 132,92
+    L 142,92 L 142,88 L 148,88 L 148,94
+    L 162,94
+    Q 175,52 240,44 Q 305,52 318,94
+    L 332,94 L 332,88 L 338,88 L 338,92
+    L 348,92 L 348,88 L 354,88 L 354,92
+    L 364,92 L 364,88 L 370,88 L 370,92
+    L 380,92 L 380,62
+    L 386,62 L 386,50 L 372,44 L 386,40
+    L 386,46 L 392,62 L 392,78 L 388,78
+    L 388,94 L 383,94 L 383,102
+    L 389,102 L 389,108 L 395,108 L 395,102
+    L 401,102 L 401,108 L 407,108
+    L 407,142
+    Z
+  "/>
+  <!-- central dome flag -->
+  <line x1="240" y1="44" x2="240" y2="26" stroke="#1e3358" stroke-width="2.5"/>
+  <path d="M 240,26 L 254,30 L 240,36 Z" fill="#1e3358"/>
+
+  <!-- ══ SHIELD BODY ══ -->
+  <path d="M 104,140 H 376 V 320 Q 376,408 240,438 Q 104,408 104,320 Z" fill="#1e3358"/>
+
+  <!-- inner shield frame -->
+  <path d="M 118,154 H 362 V 315 Q 362,392 240,420 Q 118,392 118,315 Z"
+        fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2.5"/>
+
+  <!-- ══ ГУ MONOGRAM ══ -->
+  <!-- red accent block (inside Г) -->
+  <rect x="186" y="192" width="50" height="62" fill="#c8102e"/>
+
+  <!-- Г letter (dark, covers part of red) -->
+  <path d="M 160,188 H 272 V 210 H 182 V 310 H 160 Z" fill="#1e3358"/>
+
+  <!-- У letter -->
+  <path d="M 248,188 H 296 V 258 Q 296,312 248,322 L 228,326 V 306
+           Q 258,298 272,262 V 210 H 248 Z" fill="#1e3358"/>
+
+  <!-- leaf motif -->
+  <path d="M 162,295 Q 172,278 188,282 Q 178,298 162,295 Z" fill="#1e3358" opacity="0.75"/>
+  <path d="M 165,296 Q 176,284 189,288" stroke="#1e3358" stroke-width="1.2" opacity="0.5"/>
+
+  <!-- ══ 1920 ══ -->
+  <text x="240" y="392" text-anchor="middle"
+        font-family="Georgia,'Times New Roman',serif"
+        font-size="30" font-weight="700" fill="#c8102e" letter-spacing="3">1920</text>
+
+  <!-- ══ CIRCULAR TEXT ══ -->
+  <!-- left arc: ГРОЗНЕНСКИЙ -->
+  <text font-family="Arial,Helvetica,sans-serif" font-size="15.5"
+        fill="#1e3358" font-weight="600" letter-spacing="2.2">
+    <textPath href="#arc-left" startOffset="12%">ГРОЗНЕНСКИЙ</textPath>
+  </text>
+  <!-- right arc: УНИВЕРСИТЕТ -->
+  <text font-family="Arial,Helvetica,sans-serif" font-size="15.5"
+        fill="#1e3358" font-weight="600" letter-spacing="2.2">
+    <textPath href="#arc-right" startOffset="30%">УНИВЕРСИТЕТ</textPath>
+  </text>
+  <!-- bottom arc: ГОСУДАРСТВЕННЫЙ НЕФТЯНОЙ ТЕХНИЧЕСКИЙ -->
+  <text font-family="Arial,Helvetica,sans-serif" font-size="13.5"
+        fill="#1e3358" font-weight="600" letter-spacing="1.5">
+    <textPath href="#arc-bottom" startOffset="4%">ГОСУДАРСТВЕННЫЙ · НЕФТЯНОЙ · ТЕХНИЧЕСКИЙ</textPath>
+  </text>
+</svg>

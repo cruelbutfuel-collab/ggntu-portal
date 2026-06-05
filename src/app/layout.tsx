@@ -30,6 +30,11 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'ГГНТУ — Портал абитуриента · Алия',
   description: 'Портал абитуриента ГГНТУ с виртуальным ассистентом Алия',
+  icons: {
+    icon: '/logo.svg',
+    shortcut: '/logo.svg',
+    apple: '/logo.svg',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

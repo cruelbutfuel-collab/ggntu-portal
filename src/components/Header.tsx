@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Arrow } from './icons'
@@ -32,7 +33,14 @@ export default function Header() {
     <header className={`header${scrolled ? ' is-scrolled' : ''}`}>
       <div className="wrap header__row">
         <Link href="/" className="brand">
-          <span className="brand__mark">Г</span>
+          <Image
+            src="/logo.svg"
+            alt="ГГНТУ"
+            width={52}
+            height={52}
+            className="brand__logo"
+            priority
+          />
           <span className="brand__text">
             <span className="brand__name">
               ГГНТУ
