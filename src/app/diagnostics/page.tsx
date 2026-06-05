@@ -577,23 +577,15 @@ export default function Diagnostics() {
 
           {/* CTA to chat */}
           <div style={{ paddingTop: 48, borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
-            <div>
-              <div style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 10 }}>
-                Следующий шаг
-              </div>
-              <p style={{ fontSize: 'clamp(15px,1.1vw,18px)', color: 'rgba(255,255,255,0.75)', maxWidth: 480, lineHeight: 1.55, margin: 0, fontFamily: 'var(--serif)' }}>
-                Знаешь свои баллы ЕГЭ?<br />
-                <span style={{ fontSize: 'clamp(13px,1vw,15px)', fontFamily: 'var(--sans)', color: 'rgba(255,255,255,0.45)', fontStyle: 'normal' }}>
-                  Скажи Алие — она рассчитает шансы на бюджет по каждой из этих специальностей и напомнит о ключевых сроках.
-                </span>
-              </p>
-            </div>
+            <p style={{ fontSize: 'clamp(15px,1.1vw,18px)', color: 'rgba(255,255,255,0.60)', maxWidth: 520, lineHeight: 1.6, margin: 0 }}>
+              Алия знает твой профиль — спроси о сроках, документах или конкретной специальности прямо сейчас.
+            </p>
             <Link
               href={`/chat?holland=${dominant}&label=${encodeURIComponent(info.label)}&zone=${encodeURIComponent(zone.name)}&level=${level ?? 'uni'}`}
               className="btn"
               style={{ background: 'var(--red)', flexShrink: 0 }}
             >
-              Проверить шансы на бюджет <span className="btn__arr"><Arrow /></span>
+              Спросить Алию <span className="btn__arr"><Arrow /></span>
             </Link>
           </div>
         </div>
