@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     description: 'Спроси Алию — ИИ-ассистент ответит на любой вопрос о поступлении 24/7',
     url: SITE_URL,
     siteName: 'Портал абитуриента ГГНТУ',
-    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'ГГНТУ Портал абитуриента' }],
+    images: [{ url: 'https://ggntu-portal-production.up.railway.app/opengraph-image', width: 1200, height: 630, alt: 'ГГНТУ Портал абитуриента' }],
     locale: 'ru_RU',
     type: 'website',
   },
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'ГГНТУ — Портал абитуриента · Алия',
     description: 'ИИ-ассистент Алия отвечает на вопросы абитуриентов 24/7',
-    images: ['/opengraph-image'],
+    images: ['https://ggntu-portal-production.up.railway.app/opengraph-image'],
   },
 }
 
