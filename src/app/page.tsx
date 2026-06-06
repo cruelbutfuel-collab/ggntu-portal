@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useReveal } from '@/hooks/useReveal'
 import { Arrow } from '@/components/icons'
 import { FACULTIES } from '@/lib/data'
+import DiagnosticsPromo from '@/components/DiagnosticsPromo'
 
 const DEADLINE = new Date('2026-06-20T09:00:00')
 
@@ -164,6 +165,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <DiagnosticsPromo />
 
       <section className="section section--dark">
         <div className="wrap">
