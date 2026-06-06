@@ -36,7 +36,7 @@ export default function Footer() {
             <h5>Контакты</h5>
             <span>пр-т Х.А. Исаева, 100</span>
             <a href="tel:+79290036666">+7 929 003 66 66</a>
-            <a href="mailto:priem@example.edu">priem@example.edu</a>
+            <a href="mailto:priem@gstou.ru">priem@gstou.ru</a>
             <span>Пн–Пт · 9:00–17:00</span>
           </div>
         </div>

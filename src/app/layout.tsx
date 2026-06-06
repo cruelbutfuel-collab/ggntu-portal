@@ -27,13 +27,34 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 })
 
+const SITE_URL = 'https://ggntu-portal-production.up.railway.app'
+
 export const metadata: Metadata = {
   title: 'ГГНТУ — Портал абитуриента · Алия',
-  description: 'Портал абитуриента ГГНТУ с виртуальным ассистентом Алия',
+  description: 'Виртуальный ассистент Алия помогает выбрать направление, разобраться с документами и поступить в ГГНТУ. 43 программы ВО + 33 СПО.',
+  metadataBase: new URL(SITE_URL),
+  alternates: {
+    canonical: SITE_URL,
+  },
   icons: {
     icon: '/logo.png',
     shortcut: '/logo.png',
     apple: '/logo.png',
+  },
+  openGraph: {
+    title: 'ГГНТУ — Портал абитуриента',
+    description: 'Спроси Алию — ИИ-ассистент ответит на любой вопрос о поступлении 24/7',
+    url: SITE_URL,
+    siteName: 'Портал абитуриента ГГНТУ',
+    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'ГГНТУ Портал абитуриента' }],
+    locale: 'ru_RU',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ГГНТУ — Портал абитуриента · Алия',
+    description: 'ИИ-ассистент Алия отвечает на вопросы абитуриентов 24/7',
+    images: ['/opengraph-image'],
   },
 }
 
