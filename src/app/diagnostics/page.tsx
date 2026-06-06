@@ -239,7 +239,7 @@ export default function Diagnostics() {
   /* load saved result on mount */
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(LS_KEY)
+      const raw = sessionStorage.getItem(LS_KEY)
       if (raw) setSavedResult(JSON.parse(raw))
     } catch { /* ignore */ }
   }, [])
@@ -257,7 +257,7 @@ export default function Diagnostics() {
     setLevel(null)
     setStep(0)
     setScores({ R:0, I:0, A:0, S:0, E:0, C:0 })
-    try { localStorage.removeItem(LS_KEY) } catch { /* ignore */ }
+    try { sessionStorage.removeItem(LS_KEY) } catch { /* ignore */ }
     setSavedResult(null)
   }
 
@@ -292,7 +292,7 @@ export default function Diagnostics() {
   useEffect(() => {
     if (phase === 'result') {
       try {
-        localStorage.setItem(LS_KEY, JSON.stringify({ dominant, zoneName: zone.name }))
+        sessionStorage.setItem(LS_KEY, JSON.stringify({ dominant, zoneName: zone.name }))
         setSavedResult({ dominant, zoneName: zone.name })
       } catch { /* ignore */ }
     }
