@@ -73,11 +73,14 @@ function SpecialtiesInner() {
           ) return false
         }
         if (examFilters.size > 0) {
-          const hasExam = s.exams.some(e => {
-            if (e.startsWith('Без ЕГЭ') || e.startsWith('Профессиональное') || e.includes('Русский язык')) return false
-            return e.split(' / ').map(normalizeSubject).some(sub => examFilters.has(sub))
-          })
-          if (!hasExam) return false
+          // AND: every selected subject must appear in at least one exam group
+          const allCovered = [...examFilters].every(selected =>
+            s.exams.some(e => {
+              if (e.startsWith('Без ЕГЭ') || e.startsWith('Профессиональное') || e.includes('Русский язык')) return false
+              return e.split(' / ').map(normalizeSubject).includes(selected)
+            })
+          )
+          if (!allCovered) return false
         }
         return true
       }),
