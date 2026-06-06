@@ -126,7 +126,7 @@ export default function Home() {
               { n: '53', e: '+', l: 'программ бакалавриата' },
               { n: '12', e: '',  l: 'программ специалитета' },
               { n: '23', e: '',  l: 'программ магистратуры' },
-              { n: '65', e: '+', l: 'лет истории' },
+              { n: '100', e: '+', l: 'лет истории' },
             ].map((s, i) => (
               <div key={i} className="stats__cell">
                 <div className="stats__num">{s.n}<em>{s.e}</em></div>
