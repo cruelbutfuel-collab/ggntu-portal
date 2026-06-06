@@ -1269,3 +1269,17 @@ img, svg { display: block; max-width: 100%; }
   .ik-wrap--result { margin-bottom: -73px; }
   .lead         { font-size: 16px; }
 }
+
+/* ── Streaming cursor ────────────────────────── */
+@keyframes blink {
+  0%, 100% { opacity: 1 }
+  50%       { opacity: 0 }
+}
+.msg__bubble--streaming::after {
+  content: '▋';
+  display: inline;
+  animation: blink 1s step-end infinite;
+  color: var(--red);
+  font-size: 0.85em;
+  margin-left: 1px;
+}

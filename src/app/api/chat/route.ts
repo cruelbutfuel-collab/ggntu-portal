@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { BOT_REPLIES } from '@/lib/data'
 
-/* ── System prompt (Groq / Llama) ─────────────── */
+/* ── System prompt ───────────────────────────── */
 const SYSTEM = `Ты — Алия, ассистент приёмной комиссии ГГНТУ (Грозный). Отвечай на ВСЕ вопросы о поступлении. Только обычный текст: никаких **, *, #. Списки — через "- " с новой строки. Между блоками — пустая строка.
 
 ЯЗЫК: ТОЛЬКО русский. Никаких английских слов, латинских вставок, смешанных конструкций. Если не знаешь русского термина — опиши по-русски.
@@ -94,33 +94,6 @@ C: код, IT, алгоритмы, автоматизация, цифровые 
 8. "Стабильная карьера или интересные задачи с риском?"
 После 8 ответов: Holland-тип, Икигай-анализ, 2-3 специальности. Для СПО добавь: "После колледжа можно продолжить в ГГНТУ по ускоренной программе бакалавриата."`
 
-/* ── HTML formatter ─────────────────────────── */
-function formatReply(text: string): string {
-  const lines = text.split(/\r?\n/)
-  let html = ''
-  let inList = false
-  for (const line of lines) {
-    const t = line.trim()
-    const isBullet = /^[-*+] /.test(t)
-    if (isBullet) {
-      if (!inList) {
-        html += '<ul style="list-style:none;padding:0;margin:10px 0">'
-        inList = true
-      }
-      html += '<li style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px">'
-        + '<span style="color:#c8102e;font-size:16px;line-height:1.45;flex-shrink:0">•</span>'
-        + '<span>' + t.slice(2).trim() + '</span>'
-        + '</li>'
-    } else {
-      if (inList) { html += '</ul>'; inList = false }
-      if (t === '') { if (html && !html.endsWith('<br>')) html += '<br>' }
-      else html += (html && !html.endsWith('>') ? '<br>' : '') + t
-    }
-  }
-  if (inList) html += '</ul>'
-  return html.replace(/<br><br>/g, '<br>')
-}
-
 /* ── Local fallback (no API key) ─────────────── */
 function guessIntent(text: string): string {
   const t = text.toLowerCase()
@@ -133,68 +106,108 @@ function guessIntent(text: string): string {
   return 'default'
 }
 
+/* ── Groq request body ───────────────────────── */
+function groqBody(msgs: { role: string; content: string }[]) {
+  return JSON.stringify({
+    model: 'llama-3.3-70b-versatile',
+    max_tokens: 800,
+    stream: true,
+    messages: [{ role: 'system', content: SYSTEM }, ...msgs.slice(-10)],
+  })
+}
+
 /* ── Route handler ───────────────────────────── */
 export async function POST(req: NextRequest) {
   const body = await req.json()
   const messages: { role: string; content: string }[] = body.messages ?? []
+  const encoder = new TextEncoder()
 
-  /* No API key → local fallback */
+  /* No API key → stream single fallback chunk */
   if (!process.env.GROQ_API_KEY) {
     const last = messages[messages.length - 1]?.content ?? ''
-    const key = guessIntent(last)
-    const r = BOT_REPLIES[key] ?? BOT_REPLIES.default
-    return NextResponse.json({ reply: r.text })
-  }
-
-  /* Groq API */
-  async function callGroq(attempt = 0): Promise<NextResponse> {
-    const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), 28_000)
-    try {
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        signal: controller.signal,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+    const r = BOT_REPLIES[guessIntent(last)] ?? BOT_REPLIES.default
+    return new Response(
+      new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode(r.text))
+          controller.close()
         },
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          max_tokens: 800,
-          messages: [{ role: 'system', content: SYSTEM }, ...messages.slice(-10)],
-        }),
-      })
-      clearTimeout(timer)
-
-      if (res.status === 429 && attempt === 0) {
-        await new Promise(r => setTimeout(r, 2000))
-        return callGroq(1)
-      }
-
-      if (!res.ok) {
-        const err = await res.json() as { error?: { message?: string } }
-        throw new Error(err.error?.message ?? `HTTP ${res.status}`)
-      }
-
-      const data = await res.json() as { choices: { message: { content: string } }[] }
-      let raw = data.choices[0].message.content
-      raw = raw.replace(/<think>[\s\S]*?<\/think>\s*/g, '')
-      raw = raw.replace(/\*\*(.*?)\*\*/g, '$1')
-      raw = raw.replace(/\*([^*\n]+)\*/g, '$1')
-      raw = raw.replace(/^#{1,6}\s+/gm, '')
-      // strip English words appearing mid-Russian text (keep digits, punctuation, allowed symbols)
-      raw = raw.replace(/\b[A-Za-z]{4,}\b/g, '')
-      raw = raw.replace(/\s{2,}/g, ' ').trim()
-      const clean = raw.replace(/[^\x20-\x7EЀ-ӿ–—\s]/g, '')
-      return NextResponse.json({ reply: formatReply(clean) })
-    } catch (e) {
-      clearTimeout(timer)
-      const msg = (e as Error).message
-      console.error('Groq error:', msg)
-      if (msg.includes('rate') || msg.includes('429'))
-        return NextResponse.json({ reply: 'Алия перегружена — попробуй через несколько секунд.' })
-      return NextResponse.json({ reply: 'Извини, не смогла ответить. Попробуй ещё раз.' })
-    }
+      }),
+      { headers: { 'Content-Type': 'text/plain; charset=utf-8' } }
+    )
   }
-  return callGroq()
+
+  /* Groq streaming */
+  const readable = new ReadableStream({
+    async start(controller) {
+      for (let attempt = 0; attempt <= 1; attempt++) {
+        if (attempt > 0) await new Promise(r => setTimeout(r, 2_000))
+
+        const abort = new AbortController()
+        const timer = setTimeout(() => abort.abort(), 28_000)
+
+        try {
+          const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            signal: abort.signal,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+            },
+            body: groqBody(messages),
+          })
+          clearTimeout(timer)
+
+          if (res.status === 429 && attempt === 0) continue
+          if (res.status === 429) {
+            controller.enqueue(encoder.encode('Алия перегружена — попробуй через несколько секунд.'))
+            break
+          }
+          if (!res.ok || !res.body) {
+            controller.enqueue(encoder.encode('Извини, не смогла ответить. Попробуй ещё раз.'))
+            break
+          }
+
+          /* Parse SSE stream from Groq */
+          const reader = res.body.getReader()
+          const dec = new TextDecoder()
+          let buf = ''
+
+          while (true) {
+            const { done, value } = await reader.read()
+            if (done) break
+            buf += dec.decode(value, { stream: true })
+            const lines = buf.split('\n')
+            buf = lines.pop() ?? ''
+            for (const line of lines) {
+              if (!line.startsWith('data: ')) continue
+              const payload = line.slice(6).trim()
+              if (payload === '[DONE]') continue
+              try {
+                const chunk = JSON.parse(payload) as { choices: { delta: { content?: string } }[] }
+                const text = chunk.choices?.[0]?.delta?.content ?? ''
+                if (text) controller.enqueue(encoder.encode(text))
+              } catch { /* skip malformed SSE line */ }
+            }
+          }
+          break // stream finished successfully
+
+        } catch (e) {
+          clearTimeout(timer)
+          if (attempt === 0) continue // one retry on transient errors
+          const msg = (e as Error).message
+          controller.enqueue(encoder.encode(
+            msg.includes('rate') || msg.includes('429')
+              ? 'Алия перегружена — попробуй через несколько секунд.'
+              : 'Извини, не смогла ответить. Попробуй ещё раз.'
+          ))
+        }
+      }
+      controller.close()
+    },
+  })
+
+  return new Response(readable, {
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  })
 }

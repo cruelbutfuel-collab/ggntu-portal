@@ -32,6 +32,32 @@ function fmt(d: Date) {
   return d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
 }
 
+function cleanText(raw: string): string {
+  return raw
+    .replace(/<think>[\s\S]*?<\/think>/gi, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/#{1,6}\s/g, '')
+    .trim()
+}
+
+function escHtml(s: string) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+function formatReply(raw: string): string {
+  return raw
+    .split('\n')
+    .map(line =>
+      line.startsWith('- ')
+        ? `<span style="display:block;padding-left:1.2em;text-indent:-1.2em">&#8226; ${escHtml(line.slice(2))}</span>`
+        : escHtml(line)
+    )
+    .join('\n')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>')
+}
+
 /* ── Main component ───────────────────────────── */
 function ChatInner() {
   useReveal()
@@ -63,6 +89,7 @@ function ChatInner() {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE])
   const [input, setInput] = useState('')
   const [typing, setTyping] = useState(false)
+  const [streaming, setStreaming] = useState(false)
   const [diagStep, setDiagStep] = useState(0)
   const bodyRef = useRef<HTMLDivElement>(null)
   const idRef = useRef(1)
@@ -108,32 +135,54 @@ function ChatInner() {
     historyRef.current = [...historyRef.current, { role: 'user', content: userText }]
     if (historyRef.current.length > 10) historyRef.current = historyRef.current.slice(-10)
     setTyping(true)
+
+    const msgId = idRef.current++
+    let accumulated = ''
+    let firstChunk = true
+
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: historyRef.current }),
       })
-      const data = await res.json() as { reply?: string }
-      const botText = data.reply || 'Извини, не смогла ответить. Попробуй ещё раз.'
-      historyRef.current = [...historyRef.current, { role: 'assistant', content: botText }]
-      setTyping(false)
-      setMessages(prev => [...prev, {
-        id: idRef.current++,
-        role: 'bot',
-        text: botText,
-        buttons: [],
-        time: new Date(),
-      }])
+      if (!res.body) throw new Error('No body')
+
+      const reader = res.body.getReader()
+      const dec = new TextDecoder()
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        accumulated += dec.decode(value, { stream: true })
+        const html = formatReply(cleanText(accumulated))
+        if (firstChunk) {
+          firstChunk = false
+          setTyping(false)
+          setStreaming(true)
+          setMessages(prev => [...prev, { id: msgId, role: 'bot', text: html, buttons: [], time: new Date() }])
+        } else {
+          setMessages(prev => prev.map(m => m.id === msgId ? { ...m, text: html } : m))
+        }
+      }
+
+      const finalRaw = cleanText(accumulated) || 'Извини, не смогла ответить. Попробуй ещё раз.'
+      historyRef.current = [...historyRef.current, { role: 'assistant', content: finalRaw }]
+      if (firstChunk) {
+        setTyping(false)
+        setMessages(prev => [...prev, { id: msgId, role: 'bot', text: formatReply(finalRaw), buttons: [], time: new Date() }])
+      } else {
+        setMessages(prev => prev.map(m => m.id === msgId ? { ...m, text: formatReply(finalRaw) } : m))
+      }
     } catch {
       setTyping(false)
-      setMessages(prev => [...prev, {
-        id: idRef.current++,
-        role: 'bot',
-        text: 'Извини, ошибка соединения. Попробуй снова или позвони: <b>+7 929 003 66 66</b>',
-        buttons: [],
-        time: new Date(),
-      }])
+      const errText = 'Извини, ошибка соединения. Попробуй снова или позвони: <b>+7 929 003 66 66</b>'
+      setMessages(prev => {
+        if (prev.some(m => m.id === msgId)) return prev.map(m => m.id === msgId ? { ...m, text: errText } : m)
+        return [...prev, { id: msgId, role: 'bot' as const, text: errText, buttons: [], time: new Date() }]
+      })
+    } finally {
+      setStreaming(false)
     }
   }, [])
 
@@ -171,22 +220,24 @@ function ChatInner() {
   }, [diagMode, reply])
 
   const send = useCallback((text: string) => {
-    if (!text.trim() || typing) return
+    if (!text.trim() || typing || streaming) return
     setMessages(prev => [...prev, { id: idRef.current++, role: 'user', text: text.trim(), time: new Date() }])
     setInput('')
     reply(text.trim())
-  }, [reply, typing])
+  }, [reply, typing, streaming])
 
   const handleQuick = useCallback((_id: string, text: string) => {
+    if (typing || streaming) return
     setMessages(prev => [...prev, { id: idRef.current++, role: 'user', text, time: new Date() }])
     reply(text)
-  }, [reply])
+  }, [reply, typing, streaming])
 
   const handleDiagAnswer = useCallback((ans: string) => {
+    if (typing || streaming) return
     setDiagStep(s => s + 1)
     setMessages(prev => [...prev, { id: idRef.current++, role: 'user', text: ans, time: new Date() }])
     reply(ans)
-  }, [reply])
+  }, [reply, typing, streaming])
 
   return (
     <main className="page chat">
@@ -260,12 +311,13 @@ function ChatInner() {
             <div className="chat__body" ref={bodyRef}>
               {messages.map((m, mi) => {
                 const isLastBot = m.role === 'bot' && mi === messages.length - 1
-                const showDiagBtns = isLastBot && diagMode && !typing && diagStep < DIAG_ANSWERS.length
+                const showDiagBtns = isLastBot && diagMode && !typing && !streaming && diagStep < DIAG_ANSWERS.length
+                const isStreamingMsg = isLastBot && streaming
                 return (
                   <div key={m.id} className={`msg msg--${m.role}`}>
                     {m.role === 'bot' && <div className="msg__avatar">А</div>}
                     <div>
-                      <div className="msg__bubble" dangerouslySetInnerHTML={{ __html: m.text }} />
+                      <div className={`msg__bubble${isStreamingMsg ? ' msg__bubble--streaming' : ''}`} dangerouslySetInnerHTML={{ __html: m.text }} />
                       {m.buttons && m.buttons.length > 0 && (
                         <div className="msg__buttons">
                           {m.buttons.map(b => {
@@ -332,7 +384,7 @@ function ChatInner() {
                 <button
                   className="chat__send"
                   onClick={() => send(input)}
-                  disabled={!input.trim() || typing}
+                  disabled={!input.trim() || typing || streaming}
                 >
                   <Arrow s={14} />
                 </button>
