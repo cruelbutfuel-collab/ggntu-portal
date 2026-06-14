@@ -1468,18 +1468,14 @@ img, svg { display: block; max-width: 100%; }
 .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
 .badge--budget { background: rgba(34,197,94,.12); color: #16a34a; }
 .badge--dvi    { background: var(--red-soft); color: var(--red); }
-.result-dvi-section {
-  margin-top: 40px;
-  padding-top: 24px;
+.calc-footnote {
+  margin-top: 32px;
+  padding-top: 16px;
   border-top: 1px solid var(--line);
-}
-.result-dvi-section__title {
-  font-family: var(--mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
+  font-size: 12px;
   color: var(--muted);
-  margin-bottom: 20px;
+  font-family: var(--mono);
+  line-height: 1.6;
 }
 
 /* Responsive */
