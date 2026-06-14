@@ -22,16 +22,22 @@ export default function Prep() {
   const [form, setForm] = useState<FormState>({ name: '', grade: '', age: '', subject: '', phone: '', parentPhone: '' })
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const set = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+  const set = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setError('')
     setForm(prev => ({ ...prev, [k]: e.target.value }))
-
-  const valid = form.name.trim().length > 1 && form.grade && form.age && form.subject && form.phone.trim().length > 6
+  }
 
   const handleSubmit = async (e: { preventDefault(): void }) => {
     e.preventDefault()
-    if (!valid) return
+    if (!form.name.trim())    return setError('Введи ФИО')
+    if (!form.grade)          return setError('Выбери класс')
+    if (!form.age)            return setError('Введи возраст')
+    if (!form.subject)        return setError('Выбери предмет')
+    if (!form.phone.trim())   return setError('Введи номер телефона')
     setLoading(true)
+    setError('')
     try {
       await fetch('/api/prep', {
         method: 'POST',
@@ -173,10 +179,12 @@ export default function Prep() {
                   />
                 </label>
 
+                {error && <p className="prep-error">{error}</p>}
+
                 <button
                   type="submit"
                   className="btn prep-submit"
-                  disabled={!valid || loading}
+                  disabled={loading}
                 >
                   {loading ? <span>Отправляем…</span> : <><span>Записаться</span><span className="btn__arr"><Arrow /></span></>}
                 </button>

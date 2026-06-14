@@ -1609,6 +1609,7 @@ img, svg { display: block; max-width: 100%; }
   outline: none;
   border-color: var(--red);
 }
+.prep-error { font-size: 13px; color: var(--red); margin-bottom: 4px; }
 .prep-submit { margin-top: 4px; width: 100%; justify-content: center; }
 
 /* Success state */
