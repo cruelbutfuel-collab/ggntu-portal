@@ -11,6 +11,7 @@ const NAV = [
   { to: '/about',         label: 'О чат-боте' },
   { to: '/diagnostics',   label: 'Диагностика' },
   { to: '/specialties',   label: 'Специальности' },
+  { to: '/calculator',   label: 'Калькулятор ЕГЭ' },
   { to: '/admission',     label: 'Поступление' },
   { to: '/chat',          label: 'Чат-бот' },
   { to: '/contacts',      label: 'Контакты' },
