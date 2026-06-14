@@ -178,7 +178,7 @@ export default function Prep() {
                   className="btn prep-submit"
                   disabled={!valid || loading}
                 >
-                  {loading ? 'Отправляем…' : <>Записаться <span className="btn__arr"><Arrow /></span></>}
+                  {loading ? <span>Отправляем…</span> : <><span>Записаться</span><span className="btn__arr"><Arrow /></span></>}
                 </button>
               </form>
             )}

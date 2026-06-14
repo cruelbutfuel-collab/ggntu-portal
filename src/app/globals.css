@@ -428,6 +428,8 @@ img, svg { display: block; max-width: 100%; }
 .btn > * { position: relative; z-index: 1; }
 .btn:hover { transform: translateY(-2px); }
 .btn:hover::after { transform: translateY(0); }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn:disabled::after { display: none; }
 .btn--ghost {
   background: transparent;
   color: var(--ink);
