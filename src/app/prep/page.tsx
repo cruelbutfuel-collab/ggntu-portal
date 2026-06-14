@@ -8,23 +8,25 @@ const SUBJECTS = ['Математика', 'Физика', 'Информатик�
 const GRADES   = ['9', '10', '11']
 
 type FormState = {
-  name:    string
-  grade:   string
-  age:     string
-  subject: string
+  name:        string
+  grade:       string
+  age:         string
+  subject:     string
+  phone:       string
+  parentPhone: string
 }
 
 export default function Prep() {
   useReveal()
 
-  const [form, setForm] = useState<FormState>({ name: '', grade: '', age: '', subject: '' })
+  const [form, setForm] = useState<FormState>({ name: '', grade: '', age: '', subject: '', phone: '', parentPhone: '' })
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const set = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm(prev => ({ ...prev, [k]: e.target.value }))
 
-  const valid = form.name.trim().length > 1 && form.grade && form.age && form.subject
+  const valid = form.name.trim().length > 1 && form.grade && form.age && form.subject && form.phone.trim().length > 6
 
   const handleSubmit = async (e: { preventDefault(): void }) => {
     e.preventDefault()
@@ -35,7 +37,7 @@ export default function Prep() {
         'https://script.google.com/macros/s/AKfycbwwsMK_pyM1oJA52ASth0qWT1N_1C-9Ax0aEJoiNhlbra38oD-5tHIK5pKSX5bfQd278g/exec',
         {
           method: 'POST',
-          body: JSON.stringify({ name: form.name, grade: form.grade, age: form.age, subject: form.subject }),
+          body: JSON.stringify({ name: form.name, grade: form.grade, age: form.age, subject: form.subject, phone: form.phone, parentPhone: form.parentPhone }),
         }
       )
     } finally {
@@ -148,6 +150,29 @@ export default function Prep() {
                     <option value="">Выбери предмет</option>
                     {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
+                </label>
+
+                <label className="prep-field">
+                  <span className="prep-field__label">Номер телефона</span>
+                  <input
+                    className="prep-field__input"
+                    type="tel"
+                    placeholder="+7 (900) 000-00-00"
+                    value={form.phone}
+                    onChange={set('phone')}
+                    required
+                  />
+                </label>
+
+                <label className="prep-field">
+                  <span className="prep-field__label">Номер телефона родителя</span>
+                  <input
+                    className="prep-field__input"
+                    type="tel"
+                    placeholder="+7 (900) 000-00-00"
+                    value={form.parentPhone}
+                    onChange={set('parentPhone')}
+                  />
                 </label>
 
                 <button
