@@ -69,20 +69,23 @@ function ChatInner() {
   const hollandLevel = searchParams.get('level') ?? 'uni'
   const hollandSpec = searchParams.get('spec') ?? ''
   const hollandMode = !!hollandKey
+  const calcMode = !!hollandSpec && !hollandKey
 
   const levelLabel = hollandLevel === 'spo' ? 'колледж (СПО)' : 'университет (бакалавриат)'
 
   const INITIAL_MESSAGE: Message = {
     id: 0,
     role: 'bot',
-    text: hollandMode
-      ? hollandSpec
-        ? `Привет! Я <b>Алия</b>. Вижу, тебя интересует <b>${hollandSpec}</b> — расскажу подробнее: какие ЕГЭ нужны, где работают выпускники и каковы шансы на бюджет.`
-        : `Привет! Я <b>Алия</b>. Вижу, ты прошёл тест — твой тип по Holland Codes: <b>${hollandKey} · ${hollandLabel}</b>, уровень: <b>${levelLabel}</b>. Подбираю подходящие специальности.`
-      : diagMode
-        ? 'Привет! Я <b>Алия</b>. Сейчас помогу подобрать специальность — проведу тест на 8 вопросов по методике Икигай и Holland Codes. Твои ответы помогут найти направление, которое совпадает с твоими интересами. Поехали?'
-        : 'Привет, я <b>Алия</b> — виртуальный ассистент приёмной комиссии. Помогу выбрать направление, разобраться с документами, экзаменами и сроками. Спрашивай или выбирай тему.',
-    buttons: hollandMode || diagMode ? [] : ['specialties', 'fspo', 'exams', 'budget', 'docs', 'dates'],
+    text: calcMode
+      ? `Привет! Я <b>Алия</b>. Ты смотришь <b>${hollandSpec}</b> — сейчас расскажу подробнее: нужные ЕГЭ, профили подготовки и карьерные перспективы.`
+      : hollandMode
+        ? hollandSpec
+          ? `Привет! Я <b>Алия</b>. Вижу, тебя интересует <b>${hollandSpec}</b> — расскажу подробнее: какие ЕГЭ нужны, где работают выпускники и есть ли бюджет.`
+          : `Привет! Я <b>Алия</b>. Вижу, ты прошёл тест — твой тип по Holland Codes: <b>${hollandKey} · ${hollandLabel}</b>, уровень: <b>${levelLabel}</b>. Подбираю подходящие специальности.`
+        : diagMode
+          ? 'Привет! Я <b>Алия</b>. Сейчас помогу подобрать специальность — проведу тест на 8 вопросов по методике Икигай и Holland Codes. Твои ответы помогут найти направление, которое совпадает с твоими интересами. Поехали?'
+          : 'Привет, я <b>Алия</b> — виртуальный ассистент приёмной комиссии. Помогу выбрать направление, разобраться с документами, экзаменами и сроками. Спрашивай или выбирай тему.',
+    buttons: hollandMode || diagMode || calcMode ? [] : ['specialties', 'fspo', 'exams', 'budget', 'docs', 'dates'],
     time: new Date(),
   }
 
@@ -96,6 +99,7 @@ function ChatInner() {
   const historyRef = useRef<{ role: string; content: string }[]>([])
   const diagTriggered = useRef(false)
   const hollandTriggered = useRef(false)
+  const calcTriggered = useRef(false)
 
   useEffect(() => {
     if (bodyRef.current) {
@@ -105,7 +109,7 @@ function ChatInner() {
 
   /* Restore chat history from localStorage (only in plain chat mode) */
   useEffect(() => {
-    if (hollandMode || diagMode) return
+    if (hollandMode || diagMode || calcMode) return
     try {
       const saved = localStorage.getItem(CHAT_LS_KEY)
       if (!saved) return
@@ -123,7 +127,7 @@ function ChatInner() {
 
   /* Persist chat history whenever messages change */
   useEffect(() => {
-    if (hollandMode || diagMode) return
+    if (hollandMode || diagMode || calcMode) return
     if (messages.length <= 1) return
     try {
       const toSave = messages.map(m => ({ ...m, time: m.time instanceof Date ? m.time.toISOString() : m.time }))
@@ -201,6 +205,17 @@ function ChatInner() {
       return () => clearTimeout(t)
     }
   }, [hollandMode, hollandKey, hollandLabel, hollandZone, hollandLevel, hollandSpec, reply])
+
+  /* Auto-send specialty question from calculator */
+  useEffect(() => {
+    if (calcMode && !calcTriggered.current) {
+      calcTriggered.current = true
+      const t = setTimeout(() => {
+        reply(`Меня заинтересовала специальность "${hollandSpec}"`)
+      }, 600)
+      return () => clearTimeout(t)
+    }
+  }, [calcMode, hollandSpec, reply])
 
   /* Auto-start diagnostic */
   useEffect(() => {

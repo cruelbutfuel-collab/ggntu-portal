@@ -223,7 +223,7 @@ export default function Calculator() {
                             <span>от {s.fee.toLocaleString('ru-RU')} ₽</span>
                           </div>
                         </div>
-                        <Link href={`/chat`} className="result-item__ask">
+                        <Link href={`/chat?spec=${encodeURIComponent(s.name)}`} className="result-item__ask">
                           Подробнее <Arrow s={11} />
                         </Link>
                       </div>
