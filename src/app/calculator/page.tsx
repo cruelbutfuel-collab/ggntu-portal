@@ -62,7 +62,10 @@ function checkSpecialty(
     sumBest += Math.max(...subs.map(sub => scores[sub] ?? 0))
   }
 
-  if (!hasDVI && form === 'full' && sumBest < 180) return 'no'
+  if (form === 'full') {
+    const minSum = hasDVI ? 120 : 180
+    if (sumBest < minSum) return 'no'
+  }
   return hasDVI ? 'dvi' : 'available'
 }
 
@@ -88,14 +91,20 @@ export default function Calculator() {
       f.specialties.some(s => checkSpecialty(s, scores, 'distance') === 'available')
     ), [scores, hasAnyScore])
 
-  const results = useMemo(() =>
-    FACULTIES.filter(f => !f.spo).map(f => ({
-      ...f,
-      specialties: f.specialties.filter(s => checkSpecialty(s, scores, form) === 'available'),
-    })).filter(f => f.specialties.length > 0)
-  , [scores, form])
+  const results = useMemo(() => {
+    const available: typeof FACULTIES = []
+    const withDVI:   typeof FACULTIES = []
+    FACULTIES.filter(f => !f.spo).forEach(f => {
+      const avail = f.specialties.filter(s => checkSpecialty(s, scores, form) === 'available')
+      const dvi   = f.specialties.filter(s => checkSpecialty(s, scores, form) === 'dvi')
+      if (avail.length) available.push({ ...f, specialties: avail })
+      if (dvi.length)   withDVI.push({ ...f, specialties: dvi })
+    })
+    return { available, withDVI }
+  }, [scores, form])
 
-  const totalAvailable = results.reduce((s, f) => s + f.specialties.length, 0)
+  const totalAvailable = results.available.reduce((s, f) => s + f.specialties.length, 0)
+  const totalDVI       = results.withDVI.reduce((s, f) => s + f.specialties.length, 0)
 
   function pluralSpec(n: number) {
     if (n % 10 === 1 && n % 100 !== 11) return 'специальность'
@@ -189,9 +198,12 @@ export default function Calculator() {
                 <div className="calc-results-head">
                   <span className="calc-count">{totalAvailable}</span>
                   {' '}{pluralSpec(totalAvailable)} доступно
+                  {totalDVI > 0 && (
+                    <span className="calc-dvi-badge">+ {totalDVI} с ДВИ</span>
+                  )}
                 </div>
 
-                {totalAvailable === 0 && (
+                {totalAvailable === 0 && totalDVI === 0 && (
                   passesDistanceAny && form === 'full' ? (
                     <div className="calc-noresult calc-noresult--tip">
                       <div className="calc-noresult__title">Не хватает суммы баллов для очной формы</div>
@@ -213,7 +225,7 @@ export default function Calculator() {
                   )
                 )}
 
-                {results.map(f => (
+                {results.available.map(f => (
                   <div key={f.id} className="result-group r">
                     <div className="result-group__inst">{f.short} — {f.name}</div>
                     {f.specialties.map((s, i) => (
@@ -235,17 +247,42 @@ export default function Calculator() {
                   </div>
                 ))}
 
-                {totalAvailable > 0 && (
+                {totalDVI > 0 && (
+                  <div className="result-dvi-section">
+                    <div className="result-dvi-section__title">
+                      С творческим конкурсом (ДВИ) — сдаётся после подачи документов
+                    </div>
+                    {results.withDVI.map(f => (
+                      <div key={f.id} className="result-group">
+                        <div className="result-group__inst">{f.short} — {f.name}</div>
+                        {f.specialties.map((s, i) => (
+                          <div key={i} className="result-item result-item--dim">
+                            <div className="result-item__code">{s.code}</div>
+                            <div className="result-item__info">
+                              <div className="result-item__name">{s.name}</div>
+                              <div className="result-item__meta">
+                                <span>{s.level}</span>
+                                {s.budget && <span className="badge badge--budget">Бюджет</span>}
+                                <span className="badge badge--dvi">+ ДВИ</span>
+                              </div>
+                            </div>
+                            <Link href={`/chat?spec=${encodeURIComponent(s.name)}`} className="result-item__ask">
+                              Подробнее <Arrow s={11} />
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {(totalAvailable > 0 || totalDVI > 0) && (
                   <div style={{ marginTop: 32 }}>
                     <Link href="/chat" className="btn" style={{ width: '100%', justifyContent: 'center' }}>
                       Спросить Алию о поступлении <span className="btn__arr"><Arrow /></span>
                     </Link>
                   </div>
                 )}
-
-                <p className="calc-footnote">
-                  Специальности с творческим конкурсом (Архитектура, Дизайн, Медиакоммуникации) не включены — результат ДВИ заранее неизвестен.
-                </p>
               </>
             )}
           </div>
