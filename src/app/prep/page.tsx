@@ -33,14 +33,11 @@ export default function Prep() {
     if (!valid) return
     setLoading(true)
     try {
-      await fetch(
-        'https://script.google.com/macros/s/AKfycbwwsMK_pyM1oJA52ASth0qWT1N_1C-9Ax0aEJoiNhlbra38oD-5tHIK5pKSX5bfQd278g/exec',
-        {
-          method: 'POST',
-          mode: 'no-cors',
-          body: JSON.stringify({ name: form.name, grade: form.grade, age: form.age, subject: form.subject, phone: form.phone, parentPhone: form.parentPhone }),
-        }
-      )
+      await fetch('/api/prep', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: form.name, grade: form.grade, age: form.age, subject: form.subject, phone: form.phone, parentPhone: form.parentPhone }),
+      })
     } finally {
       setLoading(false)
       setSent(true)
