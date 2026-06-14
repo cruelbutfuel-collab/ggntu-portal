@@ -205,7 +205,7 @@ export default function Prep() {
                 onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
               />
               <div className="prep-photo__overlay">
-                <span className="prep-photo__caption">Аудитория ГГНТУ · Код успеха</span>
+                <span className="prep-photo__caption">НГУК ГГНТУ, Исаева, 100</span>
               </div>
             </div>
             <div className="prep-stats">
