@@ -26,11 +26,22 @@ export default function Prep() {
 
   const valid = form.name.trim().length > 1 && form.grade && form.age && form.subject
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: { preventDefault(): void }) => {
     e.preventDefault()
     if (!valid) return
     setLoading(true)
-    setTimeout(() => { setLoading(false); setSent(true) }, 900)
+    try {
+      await fetch(
+        'https://script.google.com/macros/s/AKfycbwwsMK_pyM1oJA52ASth0qWT1N_1C-9Ax0aEJoiNhlbra38oD-5tHIK5pKSX5bfQd278g/exec',
+        {
+          method: 'POST',
+          body: JSON.stringify({ name: form.name, grade: form.grade, age: form.age, subject: form.subject }),
+        }
+      )
+    } finally {
+      setLoading(false)
+      setSent(true)
+    }
   }
 
   return (
