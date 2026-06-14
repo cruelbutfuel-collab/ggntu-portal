@@ -8,8 +8,7 @@ import { Arrow } from './icons'
 
 const NAV = [
   { to: '/',              label: 'Главная' },
-  { to: '/about',         label: 'О чат-боте' },
-  { to: '/diagnostics',   label: 'Диагностика' },
+{ to: '/diagnostics',   label: 'Диагностика' },
   { to: '/specialties',   label: 'Специальности' },
   { to: '/calculator',   label: 'Калькулятор ЕГЭ' },
   { to: '/admission',     label: 'Поступление' },
