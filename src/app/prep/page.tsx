@@ -212,7 +212,7 @@ export default function Prep() {
               {[
                 { n: '9–11', l: 'классы' },
                 { n: '5',    l: 'предметов' },
-                { n: '24/7', l: 'чат-бот Алия' },
+                { n: '80+',  l: 'результатов' },
               ].map(s => (
                 <div key={s.l} className="prep-stat">
                   <div className="prep-stat__n">{s.n}</div>
