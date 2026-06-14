@@ -82,6 +82,12 @@ export default function Calculator() {
     setScores(prev => ({ ...prev, [sub]: val }))
   }
 
+  /* Would the user pass on the most lenient form (distance)? */
+  const passesDistanceAny = useMemo(() =>
+    hasAnyScore && FACULTIES.filter(f => !f.spo).some(f =>
+      f.specialties.some(s => checkSpecialty(s, scores, 'distance') === 'available')
+    ), [scores, hasAnyScore])
+
   const results = useMemo(() => {
     const available: (typeof FACULTIES[number] & { specialties: typeof FACULTIES[number]['specialties'] })[] = []
     const withDVI:   (typeof FACULTIES[number] & { specialties: typeof FACULTIES[number]['specialties'] })[] = []
@@ -136,17 +142,16 @@ export default function Calculator() {
               <div className="calc-block__title">Форма обучения</div>
               <div className="form-select">
                 {([
-                  ['full',     'Очная',          '∑ трёх предметов ≥ 180'],
-                  ['parttime', 'Очно-заочная',   'только минимальные пороги'],
-                  ['distance', 'Заочная',         'только минимальные пороги'],
-                ] as const).map(([val, label, hint]) => (
+                  ['full',     'Очная'],
+                  ['parttime', 'Очно-заочная'],
+                  ['distance', 'Заочная'],
+                ] as const).map(([val, label]) => (
                   <button
                     key={val}
                     className={`form-btn${form === val ? ' is-active' : ''}`}
                     onClick={() => setForm(val)}
                   >
                     <span className="form-btn__label">{label}</span>
-                    <span className="form-btn__hint">{hint}</span>
                   </button>
                 ))}
               </div>
@@ -203,10 +208,25 @@ export default function Calculator() {
                 </div>
 
                 {totalAvailable === 0 && totalDVI === 0 && (
-                  <div className="calc-noresult">
-                    <p>Ни одна специальность не подходит под введённые баллы и форму обучения.</p>
-                    <p style={{ marginTop: 8 }}>Попробуй изменить форму или проверить минимальные пороги — они выделены красным.</p>
-                  </div>
+                  passesDistanceAny && form === 'full' ? (
+                    <div className="calc-noresult calc-noresult--tip">
+                      <div className="calc-noresult__title">Не хватает суммы баллов для очной формы</div>
+                      <p>На заочной или очно-заочной форме эти баллы проходят — попробуй переключить форму обучения выше.</p>
+                    </div>
+                  ) : passesDistanceAny ? (
+                    <div className="calc-noresult calc-noresult--tip">
+                      <div className="calc-noresult__title">Нет мест на этой форме</div>
+                      <p>Попробуй переключить форму обучения — на другой форме эти баллы могут подойти.</p>
+                    </div>
+                  ) : (
+                    <div className="calc-noresult calc-noresult--college">
+                      <div className="calc-noresult__title">Баллы пока не дотягивают до пороговых значений</div>
+                      <p>Если ЕГЭ ещё впереди — есть время подготовиться. Если хочешь поступить уже сейчас, рассмотри колледж ГГНТУ: поступление без ЕГЭ, только по среднему баллу аттестата.</p>
+                      <Link href="/specialties?f=fspo" className="btn" style={{ marginTop: 16, display: 'inline-flex' }}>
+                        Направления колледжа <span className="btn__arr"><Arrow /></span>
+                      </Link>
+                    </div>
+                  )
                 )}
 
                 {results.available.map(f => (
