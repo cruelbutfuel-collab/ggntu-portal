@@ -1708,3 +1708,276 @@ img, svg { display: block; max-width: 100%; }
   .prep-row { grid-template-columns: 1fr; }
   .prep-form-wrap { padding: 20px; }
 }
+
+/* ─────────────────────────────────────────────
+   Exams page
+   ───────────────────────────────────────────── */
+.exams-hero {
+  padding: clamp(60px, 8vw, 100px) 0 clamp(40px, 5vw, 64px);
+  border-bottom: 1px solid var(--line);
+}
+
+.exams-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-top: 28px;
+}
+.exams-meta__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.exams-meta__icon { font-size: 15px; }
+
+/* ── Timeline ── */
+.exams-timeline-section { padding: 56px 0 40px; }
+.exams-timeline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  position: relative;
+}
+.exams-timeline::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 22px;
+  height: 1px;
+  background: var(--line-2);
+}
+.exams-tl-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+  padding: 0 6px;
+  position: relative;
+}
+.exams-tl-item__date {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--red);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.exams-tl-item__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--red);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.exams-tl-item__label {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+  max-width: 130px;
+}
+.exams-note {
+  margin-top: 28px;
+  font-size: 12.5px;
+  color: var(--muted-2);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* ── Calendar grid ── */
+.exams-cal-section { padding: 48px 0 56px; }
+.exams-cal {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.exams-day {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.exams-day--empty { opacity: 0.45; }
+.exams-day__head {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.exams-day__date {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 500;
+}
+.exams-day__note {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-2);
+}
+.exams-day__empty {
+  padding: 16px;
+  font-size: 13px;
+  color: var(--muted-2);
+}
+.exams-day__slot {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.exams-day__slot:last-child { border-bottom: none; }
+.exams-day__time {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--red);
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.exams-day__event { margin-bottom: 8px; }
+.exams-day__event:last-child { margin-bottom: 0; }
+.exams-day__subj {
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.35;
+  padding-left: 8px;
+  border-left: 2px solid currentColor;
+  margin-bottom: 4px;
+}
+.exams-day__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-left: 10px;
+}
+.exams-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+/* ── By institute ── */
+.exams-inst-section { padding: 48px 0 64px; }
+.exams-inst-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.exams-inst-tab {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  padding: 7px 14px;
+  border-radius: 6px;
+  border: 1px solid;
+  transition: all .2s var(--e-out);
+  cursor: pointer;
+  background: transparent;
+}
+.exams-inst-tab:hover { opacity: 0.8; }
+
+.exams-inst-block {
+  margin-bottom: 40px;
+}
+.exams-inst-block__head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  border-left: 3px solid;
+  padding-left: 14px;
+  margin-bottom: 16px;
+}
+.exams-inst-block__abbr {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.exams-inst-block__name {
+  font-size: 14px;
+  color: var(--muted);
+}
+.exams-inst-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.exams-inst-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.exams-inst-table th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-2);
+  white-space: nowrap;
+}
+.exams-inst-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.exams-inst-table tr:last-child td { border-bottom: none; }
+.exams-inst-table tr:hover td { background: var(--paper-2); }
+.exams-inst-table__code {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.exams-inst-table__name {
+  min-width: 220px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.exams-inst-table__cell {
+  min-width: 120px;
+}
+.exams-cell__subj {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+.exams-cell__time {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted-2);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .exams-cal { grid-template-columns: repeat(2, 1fr); }
+  .exams-timeline { gap: 16px 0; }
+  .exams-tl-item { min-width: 90px; }
+  .exams-tl-item__label { font-size: 11px; }
+}
+@media (max-width: 560px) {
+  .exams-cal { grid-template-columns: 1fr; }
+  .exams-timeline::before { display: none; }
+  .exams-tl-item { flex-direction: row; align-items: center; gap: 10px; text-align: left; }
+  .exams-tl-item__label { max-width: none; }
+}

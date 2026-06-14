@@ -12,6 +12,7 @@ const NAV = [
   { to: '/specialties',   label: 'Специальности' },
   { to: '/calculator',   label: 'Калькулятор' },
   { to: '/prep',         label: 'Подготовка' },
+  { to: '/exams',        label: 'Расписание' },
   { to: '/admission',     label: 'Поступление' },
   { to: '/chat',          label: 'Чат-бот' },
   { to: '/contacts',      label: 'Контакты' },
