@@ -207,7 +207,7 @@ export default function Calculator() {
                   )}
                 </div>
 
-                {totalAvailable === 0 && totalDVI === 0 && (
+                {totalAvailable === 0 && (
                   passesDistanceAny && form === 'full' ? (
                     <div className="calc-noresult calc-noresult--tip">
                       <div className="calc-noresult__title">Не хватает суммы баллов для очной формы</div>
@@ -215,10 +215,10 @@ export default function Calculator() {
                     </div>
                   ) : passesDistanceAny ? (
                     <div className="calc-noresult calc-noresult--tip">
-                      <div className="calc-noresult__title">Нет мест на этой форме</div>
+                      <div className="calc-noresult__title">Нет специальностей на этой форме</div>
                       <p>Попробуй переключить форму обучения — на другой форме эти баллы могут подойти.</p>
                     </div>
-                  ) : (
+                  ) : totalDVI === 0 ? (
                     <div className="calc-noresult calc-noresult--college">
                       <div className="calc-noresult__title">Баллы пока не дотягивают до пороговых значений</div>
                       <p>Если ЕГЭ ещё впереди — есть время подготовиться. Если хочешь поступить уже сейчас, рассмотри колледж ГГНТУ: поступление без ЕГЭ, только по среднему баллу аттестата.</p>
@@ -226,7 +226,7 @@ export default function Calculator() {
                         Направления колледжа <span className="btn__arr"><Arrow /></span>
                       </Link>
                     </div>
-                  )
+                  ) : null
                 )}
 
                 {results.available.map(f => (
