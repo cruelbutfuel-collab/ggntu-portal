@@ -20,6 +20,7 @@ export default function Prep() {
   useReveal()
 
   const [form, setForm] = useState<FormState>({ name: '', grade: '', age: '', subject: '', phone: '', parentPhone: '' })
+  const [consent, setConsent] = useState(false)
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -36,6 +37,7 @@ export default function Prep() {
     if (!form.age)            return setError('Введи возраст')
     if (!form.subject)        return setError('Выбери предмет')
     if (!form.phone.trim())   return setError('Введи номер телефона')
+    if (!consent)             return setError('Необходимо согласие на обработку данных')
     setLoading(true)
     setError('')
     try {
@@ -179,12 +181,24 @@ export default function Prep() {
                   />
                 </label>
 
+                <label className="prep-consent">
+                  <input
+                    type="checkbox"
+                    className="prep-consent__check"
+                    checked={consent}
+                    onChange={e => { setConsent(e.target.checked); setError('') }}
+                  />
+                  <span className="prep-consent__text">
+                    Я соглашаюсь на обработку персональных данных в соответствии с Федеральным законом № 152-ФЗ
+                  </span>
+                </label>
+
                 {error && <p className="prep-error">{error}</p>}
 
                 <button
                   type="submit"
                   className="btn prep-submit"
-                  disabled={loading}
+                  disabled={loading || !consent}
                 >
                   {loading ? <span>Отправляем…</span> : <><span>Записаться</span><span className="btn__arr"><Arrow /></span></>}
                 </button>
