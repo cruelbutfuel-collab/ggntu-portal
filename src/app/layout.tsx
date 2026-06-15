@@ -5,6 +5,7 @@ import TopBar from '@/components/TopBar'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Cursor from '@/components/Cursor'
+import CookieBanner from '@/components/CookieBanner'
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
         </div>
         <Cursor />
+        <CookieBanner />
       </body>
     </html>
   )

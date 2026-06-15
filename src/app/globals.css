@@ -1730,6 +1730,52 @@ img, svg { display: block; max-width: 100%; }
 }
 
 /* ─────────────────────────────────────────────
+   Cookie banner
+   ───────────────────────────────────────────── */
+.cookie-banner {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 16px 24px;
+  border-radius: 12px;
+  max-width: 680px;
+  width: calc(100% - 32px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.28);
+}
+.cookie-banner__text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.75);
+  flex: 1;
+  margin: 0;
+}
+.cookie-banner__btn {
+  flex-shrink: 0;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s;
+}
+.cookie-banner__btn:hover { background: var(--red-deep); }
+@media (max-width: 540px) {
+  .cookie-banner { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .cookie-banner__btn { width: 100%; text-align: center; }
+}
+
+/* ─────────────────────────────────────────────
    Exams page
    ───────────────────────────────────────────── */
 .exams-hero {
