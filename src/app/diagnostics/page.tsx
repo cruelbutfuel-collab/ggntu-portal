@@ -46,7 +46,7 @@ const HOLLAND: Record<HollandKey, { label: string; desc: string; facIds: string[
     label: 'Системный', desc: 'Данные, IT, точность, структура',
     facIds: ['ipit', 'iceitp'],
     specCodes: ['09.03.04','09.03.01','09.03.02','10.03.01','11.03.02','09.03.03','38.03.05'],
-    magCodes: ['09.04.02','38.04.05','44.04.01'],
+    magCodes: ['09.04.02','38.04.05'],
   },
 }
 
