@@ -7,15 +7,15 @@ import { usePathname } from 'next/navigation'
 import { Arrow } from './icons'
 
 const NAV = [
-  { to: '/',              label: 'Главная' },
-{ to: '/diagnostics',   label: 'Диагностика' },
-  { to: '/specialties',   label: 'Специальности' },
-  { to: '/calculator',   label: 'Калькулятор' },
-  { to: '/prep',         label: 'Подготовка' },
-  { to: '/exams',        label: 'Расписание' },
-  { to: '/admission',     label: 'Поступление' },
-  { to: '/chat',          label: 'Чат-бот' },
-  { to: '/contacts',      label: 'Контакты' },
+  { to: '/',            label: 'Главная' },
+  { to: '/chat',        label: 'Чат-бот' },
+  { to: '/diagnostics', label: 'Диагностика' },
+  { to: '/specialties', label: 'Специальности' },
+  { to: '/calculator',  label: 'Калькулятор' },
+  { to: '/prep',        label: 'Подготовка' },
+  { to: '/exams',       label: 'Расписание' },
+  { to: '/admission',   label: 'Поступление' },
+  { to: '/contacts',    label: 'Контакты' },
 ]
 
 export default function Header() {
