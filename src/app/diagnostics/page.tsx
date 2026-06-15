@@ -231,7 +231,7 @@ const LS_KEY = 'diag_result_v1'
 export default function Diagnostics() {
   useReveal()
   const [phase, setPhase] = useState<'intro' | 'quiz' | 'result'>('intro')
-  const [level, setLevel] = useState<'uni' | 'spo' | null>(null)
+  const [level, setLevel] = useState<'uni' | 'mag' | 'spo' | null>(null)
   const [step, setStep] = useState(0)
   const [scores, setScores] = useState<Record<HollandKey, number>>({ R:0, I:0, A:0, S:0, E:0, C:0 })
   const [savedResult, setSavedResult] = useState<{ dominant: HollandKey; zoneName: string } | null>(null)
@@ -464,7 +464,8 @@ export default function Diagnostics() {
             <h2 className="h-2" style={{ marginBottom: 48 }}>Куда планируешь<br /><em>поступать?</em></h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {([
-                { val: 'uni' as const, label: 'В университет — бакалавриат / специалитет / магистратура', sub: 'После 11 класса или колледжа, с ЕГЭ' },
+                { val: 'uni' as const, label: 'В университет — бакалавриат / специалитет', sub: 'После 11 класса или колледжа, с ЕГЭ' },
+                { val: 'mag' as const, label: 'В университет — магистратура', sub: 'С дипломом бакалавра или специалиста' },
                 { val: 'spo' as const, label: 'В колледж (ФСПО)', sub: 'После 9 или 11 класса, без ЕГЭ — по среднему баллу аттестата' },
               ]).map(opt => (
                 <button
@@ -636,6 +637,8 @@ export default function Diagnostics() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }} className="r-stagger">
                     {(level === 'spo'
                       ? fac.specialties.slice(0, 6)
+                      : level === 'mag'
+                      ? fac.specialties.filter(sp => sp.level === 'Магистратура')
                       : fac.specialties
                           .filter(sp => info.specCodes.includes(sp.code))
                           .sort((a, b) => info.specCodes.indexOf(a.code) - info.specCodes.indexOf(b.code))
@@ -665,7 +668,7 @@ export default function Diagnostics() {
                           {/* exams */}
                           {exams.length > 0 && (
                             <div>
-                              <div style={{ fontFamily: 'var(--mono)', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted-2)', marginBottom: 6 }}>ЕГЭ</div>
+                              <div style={{ fontFamily: 'var(--mono)', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted-2)', marginBottom: 6 }}>{level === 'mag' ? 'Экзамен' : 'ЕГЭ'}</div>
                               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
                                 {exams.map(e => (
                                   <span key={e} style={{ fontFamily: 'var(--mono)', fontSize: 10, padding: '3px 8px', border: '1px solid var(--line-2)', borderRadius: 999, color: 'var(--ink)' }}>
@@ -702,7 +705,7 @@ export default function Diagnostics() {
               ))}
 
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 8 }}>
-                <Link href="/specialties" className="btn">
+                <Link href={level === 'mag' ? '/specialties?lvl=Магистратура' : level === 'spo' ? '/specialties?lvl=СПО' : '/specialties'} className="btn">
                   Все специальности <span className="btn__arr"><Arrow /></span>
                 </Link>
                 <button className="btn btn--ghost" onClick={restart}>
