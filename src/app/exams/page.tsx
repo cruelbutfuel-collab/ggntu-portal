@@ -5,7 +5,8 @@ import { useReveal } from '@/hooks/useReveal'
 
 type ExamEntry = { date: string; subject: string; time: string }
 type Specialty = { code: string; name: string; exams: ExamEntry[] }
-type Institute = { id: string; abbr: string; name: string; color: string; specialties: Specialty[] }
+type MasterProgram = { code: string; name: string; time: string; examType: string }
+type Institute = { id: string; abbr: string; name: string; color: string; specialties: Specialty[]; masters: MasterProgram[] }
 
 const MILESTONES = [
   { date: '20 июня',    label: 'Начало приёма документов' },
@@ -17,6 +18,8 @@ const MILESTONES = [
   { date: '3 авг',      label: 'Приоритетный этап: приказы о зачислении' },
   { date: '5 авг',      label: 'Основной этап: согласие (до 12:00)' },
   { date: '7 авг',      label: 'Основной этап: приказы о зачислении' },
+  { date: '21 авг',     label: 'Вступительные испытания магистратуры (бюджет)' },
+  { date: '25 авг',     label: 'Зачисление в магистратуру: согласие (до 12:00)' },
 ]
 
 const INSTITUTES: Institute[] = [
@@ -56,6 +59,11 @@ const INSTITUTES: Institute[] = [
         { date: '19.07', subject: 'Русский язык', time: '09:00' },
       ]},
     ],
+    masters: [
+      { code: '07.04.01', name: 'Архитектура', time: '09:00', examType: 'профессиональное испытание' },
+      { code: '08.04.01', name: 'Строительство', time: '14:00', examType: 'письменный экзамен' },
+      { code: '21.04.02', name: 'Землеустройство и кадастры', time: '14:00', examType: 'письменный экзамен' },
+    ],
   },
   {
     id: 'ipit', abbr: 'ИПИТ', color: '#2980b9',
@@ -86,6 +94,10 @@ const INSTITUTES: Institute[] = [
         { date: '17.07', subject: 'Информатика / Физика', time: '14:00' },
         { date: '19.07', subject: 'Русский язык', time: '09:00' },
       ]},
+    ],
+    masters: [
+      { code: '09.04.02', name: 'Информационные системы и технологии', time: '14:00', examType: 'письменный экзамен' },
+      { code: '44.04.01', name: 'Педагогическое образование', time: '14:00', examType: 'письменный экзамен' },
     ],
   },
   {
@@ -132,6 +144,13 @@ const INSTITUTES: Institute[] = [
         { date: '17.07', subject: 'История / Информатика / Математика', time: '09:00' },
         { date: '18.07', subject: 'Русский язык', time: '14:00' },
       ]},
+    ],
+    masters: [
+      { code: '38.04.01', name: 'Экономика', time: '09:00', examType: 'письменный экзамен' },
+      { code: '38.04.02', name: 'Менеджмент', time: '09:00', examType: 'письменный экзамен' },
+      { code: '38.04.04', name: 'Государственное и муниципальное управление', time: '09:00', examType: 'письменный экзамен' },
+      { code: '38.04.05', name: 'Бизнес-информатика', time: '09:00', examType: 'письменный экзамен' },
+      { code: '40.04.01', name: 'Юриспруденция', time: '09:00', examType: 'письменный экзамен' },
     ],
   },
   {
@@ -184,6 +203,11 @@ const INSTITUTES: Institute[] = [
         { date: '19.07', subject: 'Русский язык', time: '14:00' },
       ]},
     ],
+    masters: [
+      { code: '05.04.06', name: 'Экология и природопользование', time: '14:00', examType: 'письменный экзамен' },
+      { code: '18.04.01', name: 'Химическая технология', time: '14:00', examType: 'письменный экзамен' },
+      { code: '21.04.01', name: 'Нефтегазовое дело', time: '14:00', examType: 'письменный экзамен' },
+    ],
   },
   {
     id: 'ie', abbr: 'ИЭ', color: '#c0392b',
@@ -229,6 +253,12 @@ const INSTITUTES: Institute[] = [
         { date: '18.07', subject: 'Математика', time: '09:00' },
         { date: '19.07', subject: 'Русский язык', time: '14:00' },
       ]},
+    ],
+    masters: [
+      { code: '13.04.01', name: 'Теплоэнергетика и теплотехника', time: '14:00', examType: 'письменный экзамен' },
+      { code: '13.04.02', name: 'Электроэнергетика и электротехника', time: '14:00', examType: 'письменный экзамен' },
+      { code: '15.04.04', name: 'Автоматизация технологических процессов и производств', time: '14:00', examType: 'письменный экзамен' },
+      { code: '27.04.05', name: 'Инноватика', time: '14:00', examType: 'письменный экзамен' },
     ],
   },
 ]
@@ -442,6 +472,38 @@ export default function Exams() {
                 </tbody>
               </table>
             </div>
+
+            {/* Masters section */}
+            {inst.masters.length > 0 && (
+              <div className="exams-masters-wrap">
+                <div className="exams-masters-head">
+                  <span className="exams-masters-label">Магистратура</span>
+                  <span className="exams-masters-date">21 августа 2026 · резерв 22 августа</span>
+                </div>
+                <div className="exams-inst-table-wrap">
+                  <table className="exams-inst-table">
+                    <thead>
+                      <tr>
+                        <th>Код</th>
+                        <th>Направление подготовки</th>
+                        <th>Время</th>
+                        <th>Форма испытания</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {inst.masters.map(m => (
+                        <tr key={m.code}>
+                          <td className="exams-inst-table__code">{m.code}</td>
+                          <td className="exams-inst-table__name">{m.name}</td>
+                          <td style={{ fontFamily: 'var(--mono)', fontSize: 12, whiteSpace: 'nowrap' }}>{m.time}</td>
+                          <td style={{ fontSize: 13, color: 'var(--muted)' }}>{m.examType}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </section>
