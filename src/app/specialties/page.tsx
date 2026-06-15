@@ -345,7 +345,10 @@ function SpecialtiesInner() {
                             </div>
                             <div className="spec-detail__col">
                               <h5>Форма обучения</h5>
-                              <p style={{ fontSize: 15, marginBottom: 24 }}>{s.form}</p>
+                              <p style={{ fontSize: 15, marginBottom: s.form.includes('*') ? 6 : 24 }}>{s.form}</p>
+                              {s.form.includes('*') && (
+                                <p style={{ fontSize: 11, fontFamily: 'var(--mono)', color: 'var(--muted)', letterSpacing: '.04em', marginBottom: 24 }}>* Заочная — только как второе высшее образование</p>
+                              )}
 
                               <h5>Стоимость · в год</h5>
                               <div className="tuition-list">
