@@ -5,7 +5,8 @@ import { useReveal } from '@/hooks/useReveal'
 
 type ExamEntry = { date: string; subject: string; time: string }
 type Specialty = { code: string; name: string; exams: ExamEntry[] }
-type MasterProgram = { code: string; name: string; time: string; examType: string }
+type MasterFees = { ochno?: number; ochnoZaochno?: number; zaochno?: number }
+type MasterProgram = { code: string; name: string; time: string; examType: string; fees: MasterFees }
 type Institute = { id: string; abbr: string; name: string; color: string; specialties: Specialty[]; masters: MasterProgram[] }
 
 const MILESTONES = [
@@ -60,9 +61,9 @@ const INSTITUTES: Institute[] = [
       ]},
     ],
     masters: [
-      { code: '07.04.01', name: 'Архитектура', time: '09:00', examType: 'профессиональное испытание' },
-      { code: '08.04.01', name: 'Строительство', time: '14:00', examType: 'письменный экзамен' },
-      { code: '21.04.02', name: 'Землеустройство и кадастры', time: '14:00', examType: 'письменный экзамен' },
+      { code: '07.04.01', name: 'Архитектура',                   time: '09:00', examType: 'профессиональное испытание', fees: { ochno: 148607, ochnoZaochno: 44517 } },
+      { code: '08.04.01', name: 'Строительство',                  time: '14:00', examType: 'письменный экзамен',         fees: { ochno: 148607, ochnoZaochno: 61211, zaochno: 38952 } },
+      { code: '21.04.02', name: 'Землеустройство и кадастры',     time: '14:00', examType: 'письменный экзамен',         fees: { ochno: 175476, ochnoZaochno: 44517, zaochno: 33388 } },
     ],
   },
   {
@@ -96,8 +97,8 @@ const INSTITUTES: Institute[] = [
       ]},
     ],
     masters: [
-      { code: '09.04.02', name: 'Информационные системы и технологии', time: '14:00', examType: 'письменный экзамен' },
-      { code: '44.04.01', name: 'Педагогическое образование', time: '14:00', examType: 'письменный экзамен' },
+      { code: '09.04.02', name: 'Информационные системы и технологии', time: '14:00', examType: 'письменный экзамен', fees: { ochno: 148607, zaochno: 38952 } },
+      { code: '44.04.01', name: 'Педагогическое образование',          time: '14:00', examType: 'письменный экзамен', fees: { ochno: 132244, ochnoZaochno: 44517, zaochno: 44517 } },
     ],
   },
   {
@@ -146,11 +147,11 @@ const INSTITUTES: Institute[] = [
       ]},
     ],
     masters: [
-      { code: '38.04.01', name: 'Экономика', time: '09:00', examType: 'письменный экзамен' },
-      { code: '38.04.02', name: 'Менеджмент', time: '09:00', examType: 'письменный экзамен' },
-      { code: '38.04.04', name: 'Государственное и муниципальное управление', time: '09:00', examType: 'письменный экзамен' },
-      { code: '38.04.05', name: 'Бизнес-информатика', time: '09:00', examType: 'письменный экзамен' },
-      { code: '40.04.01', name: 'Юриспруденция', time: '09:00', examType: 'письменный экзамен' },
+      { code: '38.04.01', name: 'Экономика',                                     time: '09:00', examType: 'письменный экзамен', fees: { ochno: 132244, zaochno: 50082 } },
+      { code: '38.04.02', name: 'Менеджмент',                                    time: '09:00', examType: 'письменный экзамен', fees: { ochno: 132244, zaochno: 44517 } },
+      { code: '38.04.04', name: 'Государственное и муниципальное управление',    time: '09:00', examType: 'письменный экзамен', fees: { ochno: 132244, ochnoZaochno: 66776, zaochno: 50082 } },
+      { code: '38.04.05', name: 'Бизнес-информатика',                            time: '09:00', examType: 'письменный экзамен', fees: { ochno: 132244, ochnoZaochno: 66776, zaochno: 44517 } },
+      { code: '40.04.01', name: 'Юриспруденция',                                 time: '09:00', examType: 'письменный экзамен', fees: { ochno: 132244, ochnoZaochno: 66776, zaochno: 66776 } },
     ],
   },
   {
@@ -204,9 +205,9 @@ const INSTITUTES: Institute[] = [
       ]},
     ],
     masters: [
-      { code: '05.04.06', name: 'Экология и природопользование', time: '14:00', examType: 'письменный экзамен' },
-      { code: '18.04.01', name: 'Химическая технология', time: '14:00', examType: 'письменный экзамен' },
-      { code: '21.04.01', name: 'Нефтегазовое дело', time: '14:00', examType: 'письменный экзамен' },
+      { code: '05.04.06', name: 'Экология и природопользование', time: '14:00', examType: 'письменный экзамен', fees: { ochno: 148607, ochnoZaochno: 44517, zaochno: 38952 } },
+      { code: '18.04.01', name: 'Химическая технология',         time: '14:00', examType: 'письменный экзамен', fees: { ochno: 148607, ochnoZaochno: 44517 } },
+      { code: '21.04.01', name: 'Нефтегазовое дело',             time: '14:00', examType: 'письменный экзамен', fees: { ochno: 175476, ochnoZaochno: 55646 } },
     ],
   },
   {
@@ -255,10 +256,10 @@ const INSTITUTES: Institute[] = [
       ]},
     ],
     masters: [
-      { code: '13.04.01', name: 'Теплоэнергетика и теплотехника', time: '14:00', examType: 'письменный экзамен' },
-      { code: '13.04.02', name: 'Электроэнергетика и электротехника', time: '14:00', examType: 'письменный экзамен' },
-      { code: '15.04.04', name: 'Автоматизация технологических процессов и производств', time: '14:00', examType: 'письменный экзамен' },
-      { code: '27.04.05', name: 'Инноватика', time: '14:00', examType: 'письменный экзамен' },
+      { code: '13.04.01', name: 'Теплоэнергетика и теплотехника',                          time: '14:00', examType: 'письменный экзамен', fees: { ochno: 148607, ochnoZaochno: 44517, zaochno: 33388 } },
+      { code: '13.04.02', name: 'Электроэнергетика и электротехника',                       time: '14:00', examType: 'письменный экзамен', fees: { ochno: 148607, ochnoZaochno: 44517, zaochno: 33388 } },
+      { code: '15.04.04', name: 'Автоматизация технологических процессов и производств',    time: '14:00', examType: 'письменный экзамен', fees: { ochno: 148607, ochnoZaochno: 44517, zaochno: 33388 } },
+      { code: '27.04.05', name: 'Инноватика',                                               time: '14:00', examType: 'письменный экзамен', fees: { ochno: 148607, ochnoZaochno: 44517, zaochno: 33388 } },
     ],
   },
 ]
@@ -488,6 +489,9 @@ export default function Exams() {
                         <th>Направление подготовки</th>
                         <th>Время</th>
                         <th>Форма испытания</th>
+                        <th>Очно, ₽/год</th>
+                        <th>Очно-заочно, ₽/год</th>
+                        <th>Заочно, ₽/год</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -497,6 +501,9 @@ export default function Exams() {
                           <td className="exams-inst-table__name">{m.name}</td>
                           <td style={{ fontFamily: 'var(--mono)', fontSize: 12, whiteSpace: 'nowrap' }}>{m.time}</td>
                           <td style={{ fontSize: 13, color: 'var(--muted)' }}>{m.examType}</td>
+                          <td className="exams-fee-cell">{m.fees.ochno?.toLocaleString('ru-RU') ?? '—'}</td>
+                          <td className="exams-fee-cell">{m.fees.ochnoZaochno?.toLocaleString('ru-RU') ?? '—'}</td>
+                          <td className="exams-fee-cell">{m.fees.zaochno?.toLocaleString('ru-RU') ?? '—'}</td>
                         </tr>
                       ))}
                     </tbody>

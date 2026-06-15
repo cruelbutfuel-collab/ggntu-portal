@@ -1968,6 +1968,16 @@ img, svg { display: block; max-width: 100%; }
   color: var(--muted-2);
 }
 
+.exams-fee-cell {
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--ink);
+  text-align: right;
+}
+.exams-fee-cell:empty,
+.exams-fee-cell:has(span) { color: var(--muted-2); }
+
 .exams-masters-wrap {
   margin-top: 12px;
 }
