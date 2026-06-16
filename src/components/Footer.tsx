@@ -1,14 +1,5 @@
 import Link from 'next/link'
 
-const NAV = [
-  { to: '/',            label: 'Главная' },
-  { to: '/about',       label: 'О чат-боте' },
-  { to: '/specialties', label: 'Специальности' },
-  { to: '/admission',   label: 'Поступление' },
-  { to: '/chat',        label: 'Чат-бот' },
-  { to: '/contacts',    label: 'Контакты' },
-]
-
 export default function Footer() {
   return (
     <footer className="footer">
@@ -21,16 +12,23 @@ export default function Footer() {
           </div>
           <div className="footer__col">
             <h5>Навигация</h5>
-            {NAV.map(n => (
-              <Link key={n.to} href={n.to}>{n.label}</Link>
-            ))}
+            <Link href="/">Главная</Link>
+            <Link href="/chat">Чат-бот Алия</Link>
+            <Link href="/diagnostics">Диагностика</Link>
+            <Link href="/specialties">Специальности</Link>
+            <Link href="/calculator">Калькулятор</Link>
+            <Link href="/prep">Подготовка</Link>
+            <Link href="/exams">Расписание</Link>
+            <Link href="/admission">Поступление</Link>
+            <Link href="/contacts">Контакты</Link>
           </div>
           <div className="footer__col">
             <h5>Абитуриентам</h5>
             <Link href="/admission">Сроки приёма</Link>
             <Link href="/admission">Документы</Link>
-            <Link href="/admission">Экзамены ЕГЭ</Link>
+            <Link href="/exams">Экзамены ЕГЭ</Link>
             <Link href="/specialties">Все направления</Link>
+            <Link href="/about">О чат-боте</Link>
           </div>
           <div className="footer__col">
             <h5>Контакты</h5>
@@ -41,7 +39,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer__bottom">
-          <span>© 2026 · Дипломный проект — система профориентации</span>
+          <span>© 2026 · Портал абитуриента ГГНТУ</span>
           <span>Версия портала · 02 — апрель 2026</span>
         </div>
         <div className="footer__big">Алия</div>
