@@ -28,7 +28,6 @@ export default function Footer() {
             <Link href="/admission">Документы</Link>
             <Link href="/exams">Экзамены ЕГЭ</Link>
             <Link href="/specialties">Все направления</Link>
-            <Link href="/about">О чат-боте</Link>
           </div>
           <div className="footer__col">
             <h5>Контакты</h5>
