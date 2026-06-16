@@ -83,7 +83,7 @@ export default function Home() {
           <div className="hero__head">
             <div className="eyebrow">Поступай осознанно — спрашивай</div>
             <div className="hero__meta">
-              <span>43 направления ВО · 33 СПО</span>
+              <span>60+ программ ВО · 33 СПО</span>
               <span><b>5 институтов + колледж</b></span>
             </div>
           </div>
@@ -123,9 +123,9 @@ export default function Home() {
         <div className="wrap">
           <div className="stats__row r-stagger">
             {[
-              { n: '53', e: '+', l: 'программ бакалавриата' },
-              { n: '12', e: '',  l: 'программ специалитета' },
-              { n: '23', e: '',  l: 'программ магистратуры' },
+              { n: '35', e: '+', l: 'программ бакалавриата' },
+              { n: '8',  e: '',  l: 'программ специалитета' },
+              { n: '17', e: '',  l: 'программ магистратуры' },
               { n: '100', e: '+', l: 'лет истории' },
             ].map((s, i) => (
               <div key={i} className="stats__cell">

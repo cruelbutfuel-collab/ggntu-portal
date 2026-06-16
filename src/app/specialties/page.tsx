@@ -143,9 +143,9 @@ function SpecialtiesInner() {
           </div>
           <div className="spec-hero__meta">
             <div><span>Институтов</span><b>5<em>+1</em></b></div>
-            <div><span>Программ ВО</span><b>43</b></div>
+            <div><span>Программ ВО</span><b>60<em>+</em></b></div>
             <div><span>Программ СПО</span><b>33</b></div>
-            <div><span>Бюджет</span><b><em>да</em></b></div>
+            <div><span>Истории</span><b>100<em>+</em></b></div>
           </div>
         </div>
       </section>

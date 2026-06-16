@@ -32,7 +32,7 @@ const SITE_URL = 'https://ggntu-portal-production.up.railway.app'
 
 export const metadata: Metadata = {
   title: 'ГГНТУ — Портал абитуриента · Алия',
-  description: 'Виртуальный ассистент Алия помогает выбрать направление, разобраться с документами и поступить в ГГНТУ. 43 программы ВО + 33 СПО.',
+  description: 'Виртуальный ассистент Алия помогает выбрать направление, разобраться с документами и поступить в ГГНТУ. 60+ программ ВО + 33 СПО.',
   metadataBase: new URL(SITE_URL),
   alternates: {
     canonical: SITE_URL,

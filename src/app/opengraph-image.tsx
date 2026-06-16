@@ -35,7 +35,7 @@ export default function OGImage() {
             Алия отвечает
           </div>
           <div style={{ color: 'rgba(244,242,238,0.55)', fontFamily: 'sans-serif', fontSize: 24, lineHeight: 1.5, maxWidth: 700 }}>
-            ИИ-ассистент приёмной комиссии — 43 программы ВО, 33 СПО, ответы на вопросы 24/7
+            ИИ-ассистент приёмной комиссии — 60+ программ ВО, 33 СПО, ответы на вопросы 24/7
           </div>
         </div>
 
@@ -45,7 +45,7 @@ export default function OGImage() {
             ggntu-portal-production.up.railway.app
           </span>
           <div style={{ display: 'flex', gap: 48 }}>
-            {[['43', 'программы ВО'], ['33', 'программы СПО'], ['1920', 'год основания']].map(([n, l]) => (
+            {[['60+', 'программ ВО'], ['33', 'программы СПО'], ['1920', 'год основания']].map(([n, l]) => (
               <div key={l} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                 <span style={{ color: '#C8102E', fontFamily: 'serif', fontSize: 36, lineHeight: 1 }}>{n}</span>
                 <span style={{ color: '#6B6A66', fontFamily: 'sans-serif', fontSize: 13, marginTop: 4 }}>{l}</span>
