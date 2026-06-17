@@ -489,9 +489,6 @@ export default function Exams() {
                         <th>Направление подготовки</th>
                         <th>Время</th>
                         <th>Форма испытания</th>
-                        <th>Очно, ₽/год</th>
-                        <th>Очно-заочно, ₽/год</th>
-                        <th>Заочно, ₽/год</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -501,9 +498,6 @@ export default function Exams() {
                           <td className="exams-inst-table__name">{m.name}</td>
                           <td style={{ fontFamily: 'var(--mono)', fontSize: 12, whiteSpace: 'nowrap' }}>{m.time}</td>
                           <td style={{ fontSize: 13, color: 'var(--muted)' }}>{m.examType}</td>
-                          <td className="exams-fee-cell">{m.fees.ochno?.toLocaleString('ru-RU') ?? '—'}</td>
-                          <td className="exams-fee-cell">{m.fees.ochnoZaochno?.toLocaleString('ru-RU') ?? '—'}</td>
-                          <td className="exams-fee-cell">{m.fees.zaochno?.toLocaleString('ru-RU') ?? '—'}</td>
                         </tr>
                       ))}
                     </tbody>
