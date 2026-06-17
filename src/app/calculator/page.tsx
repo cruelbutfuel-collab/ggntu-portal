@@ -215,12 +215,23 @@ export default function Calculator() {
                       <p>Попробуй переключить форму обучения — на другой форме эти баллы могут подойти.</p>
                     </div>
                   ) : (
-                    <div className="calc-noresult calc-noresult--college">
-                      <div className="calc-noresult__title">Баллы пока не дотягивают до пороговых значений</div>
-                      <p>Если ЕГЭ ещё впереди — есть время подготовиться. Если хочешь поступить уже сейчас, рассмотри колледж ГГНТУ: поступление без ЕГЭ, только по среднему баллу аттестата.</p>
-                      <Link href="/specialties?f=fspo" className="btn" style={{ marginTop: 16, display: 'inline-flex' }}>
-                        Направления колледжа <span className="btn__arr"><Arrow /></span>
-                      </Link>
+                    <div className="calc-college-hint">
+                      <div className="calc-college-hint__heading">
+                        В этом году баллов<br />не хватило.
+                      </div>
+                      <p className="calc-college-hint__text">
+                        Но это не конец — можно поступить в колледж ГГНТУ
+                        по среднему баллу аттестата, без ЕГЭ. А пока готовиться
+                        к следующему году на курсах при университете.
+                      </p>
+                      <div className="calc-college-hint__btns">
+                        <Link href="/specialties?lvl=СПО" className="btn">
+                          Колледж ГГНТУ <span className="btn__arr"><Arrow /></span>
+                        </Link>
+                        <Link href="/prep" className="btn btn--ghost">
+                          Записаться на подготовку
+                        </Link>
+                      </div>
                     </div>
                   )
                 )}
