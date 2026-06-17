@@ -88,15 +88,15 @@ export default function Calculator() {
   /* Would the user pass on the most lenient form (distance)? */
   const passesDistanceAny = useMemo(() =>
     hasAnyScore && FACULTIES.filter(f => !f.spo).some(f =>
-      f.specialties.some(s => checkSpecialty(s, scores, 'distance') === 'available')
+      f.specialties.some(s => s.level !== 'Магистратура' && checkSpecialty(s, scores, 'distance') === 'available')
     ), [scores, hasAnyScore])
 
   const results = useMemo(() => {
     const available: typeof FACULTIES = []
     const withDVI:   typeof FACULTIES = []
     FACULTIES.filter(f => !f.spo).forEach(f => {
-      const avail = f.specialties.filter(s => checkSpecialty(s, scores, form) === 'available')
-      const dvi   = f.specialties.filter(s => checkSpecialty(s, scores, form) === 'dvi')
+      const avail = f.specialties.filter(s => s.level !== 'Магистратура' && checkSpecialty(s, scores, form) === 'available')
+      const dvi   = f.specialties.filter(s => s.level !== 'Магистратура' && checkSpecialty(s, scores, form) === 'dvi')
       if (avail.length) available.push({ ...f, specialties: avail })
       if (dvi.length)   withDVI.push({ ...f, specialties: dvi })
     })
