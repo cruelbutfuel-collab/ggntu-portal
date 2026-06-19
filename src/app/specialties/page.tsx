@@ -138,7 +138,7 @@ function SpecialtiesInner() {
           <div>
             <div className="eyebrow" style={{ marginBottom: 24 }}>№ 02 / Каталог направлений</div>
             <h1 className="h-1">
-              Специальности<br />и <em>направления</em><br />подготовки.
+              Специальности<br />и <em>направления</em><br />подготовки
             </h1>
           </div>
           <div className="spec-hero__meta">

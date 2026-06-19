@@ -57,7 +57,7 @@ export default function Admission() {
           <div>
             <div className="eyebrow" style={{ marginBottom: 24 }}>№ 03 / Поступление 2026/27</div>
             <h1 className="h-1">
-              Всё, что нужно<br />знать о <em>поступлении</em>.
+              Всё, что нужно<br />знать о <em>поступлении</em>
             </h1>
           </div>
           <div className="progress-card r">

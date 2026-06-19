@@ -259,7 +259,7 @@ function ChatInner() {
       <div className="wrap">
         <div style={{ marginBottom: 32 }}>
           <div className="eyebrow" style={{ marginBottom: 18 }}>№ 04 / Алия — ассистент приёмной комиссии</div>
-          <h1 className="h-1">Спрашивай <em>что угодно</em><br />о поступлении.</h1>
+          <h1 className="h-1">Спрашивай <em>что угодно</em><br />о поступлении</h1>
         </div>
 
         <div className="chat__layout">

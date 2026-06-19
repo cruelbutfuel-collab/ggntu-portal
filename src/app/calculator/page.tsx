@@ -118,7 +118,7 @@ export default function Calculator() {
         <div className="wrap">
           <div className="eyebrow" style={{ marginBottom: 18 }}>№ 05 / Калькулятор ЕГЭ</div>
           <h1 className="h-1">
-            Узнай, на какие<br />специальности<br /><em>ты проходишь.</em>
+            Узнай, на какие<br />специальности<br /><em>ты проходишь</em>
           </h1>
           <p className="lead muted" style={{ marginTop: 24, maxWidth: 520 }}>
             Введи баллы ЕГЭ — система покажет доступные направления ГГНТУ.

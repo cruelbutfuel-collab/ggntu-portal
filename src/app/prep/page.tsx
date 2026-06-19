@@ -58,7 +58,7 @@ export default function Prep() {
         <div className="wrap">
           <div className="eyebrow" style={{ marginBottom: 18 }}>№ 06 / Довузовская подготовка</div>
           <h1 className="h-1">
-            Готовься к ЕГЭ<br />вместе с<br /><em>преподавателями ГГНТУ.</em>
+            Готовься к ЕГЭ<br />вместе с<br /><em>преподавателями ГГНТУ</em>
           </h1>
           <p className="lead muted" style={{ marginTop: 24, maxWidth: 560 }}>
             Подготовительные курсы для учащихся 9–11 классов. Дисциплины — в профиль

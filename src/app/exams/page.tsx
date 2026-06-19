@@ -297,7 +297,7 @@ export default function Exams() {
         <div className="wrap">
           <div className="eyebrow" style={{ marginBottom: 18 }}>№ 07 / Вступительные испытания</div>
           <h1 className="h-1">
-            Расписание<br />вступительных<br /><em>испытаний 2026.</em>
+            Расписание<br />вступительных<br /><em>испытаний 2026</em>
           </h1>
           <p className="lead muted" style={{ marginTop: 24, maxWidth: 560 }}>
             Бакалавриат и специалитет — очная, очно-заочная, заочная формы.

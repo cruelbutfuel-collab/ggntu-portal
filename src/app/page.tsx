@@ -173,7 +173,7 @@ export default function Home() {
           <div className="section__head section__head--dark r">
             <div>
               <div className="section__num"><b>03</b>Как это работает</div>
-              <h2 className="h-1" style={{ color: 'var(--paper)' }}>Три шага<br />до решения.</h2>
+              <h2 className="h-1" style={{ color: 'var(--paper)' }}>Три шага<br />до решения</h2>
             </div>
             <p className="lead muted" style={{ color: 'rgba(255,255,255,0.60)' }}>
               Чат-бот не заменяет приёмную комиссию — он экономит твоё время

@@ -23,7 +23,7 @@ export default function About() {
           <div>
             <div className="eyebrow" style={{ marginBottom: 24 }}>О проекте · ВКР по специальности ИТ</div>
             <h1 className="h-1 about-hero__title">
-              Виртуальный<br />ассистент <em>«Алия»</em><br />для абитуриентов.
+              Виртуальный<br />ассистент <em>«Алия»</em><br />для абитуриентов
             </h1>
           </div>
           <div className="about-hero__side r">

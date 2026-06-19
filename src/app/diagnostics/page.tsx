@@ -322,7 +322,7 @@ export default function Diagnostics() {
             <div style={{ flex: '1 1 420px', maxWidth: 560 }}>
               <div className="eyebrow r" style={{ marginBottom: 24 }}>№ 06 / Профориентация · Икигай + Holland</div>
               <h1 className="h-display r" style={{ marginBottom: 28 }}>
-                Найди своё<br /><em>направление.</em>
+                Найди своё<br /><em>направление</em>
               </h1>
               <p className="lead r" style={{ marginBottom: 36, color: 'var(--muted)' }}>
                 8 вопросов. Алия проанализирует твои ответы сразу по двум методологиям —
