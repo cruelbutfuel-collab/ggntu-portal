@@ -64,7 +64,7 @@ export default function About() {
           <div className="section__head r">
             <div>
               <div className="section__num"><b>04</b>Возможности</div>
-              <h2 className="h-1">Что умеет<br /><em>Алия</em>.</h2>
+              <h2 className="h-1">Что умеет<br /><em>Алия</em></h2>
             </div>
             <p className="lead muted">
               Не заменяет живого специалиста, но решает задачи первого
@@ -90,7 +90,7 @@ export default function About() {
           <div className="section__head section__head--dark r">
             <div>
               <div className="section__num"><b>05</b>Технологический стек</div>
-              <h2 className="h-1" style={{ color: 'var(--paper)' }}>На чём<br />построено.</h2>
+              <h2 className="h-1" style={{ color: 'var(--paper)' }}>На чём<br />построено</h2>
             </div>
             <p className="lead muted" style={{ color: 'rgba(255,255,255,0.60)' }}>
               Современный фронтенд, обработка естественного языка,

@@ -84,7 +84,7 @@ export default function Admission() {
           <div className="section__head r">
             <div>
               <div className="section__num"><b>01</b>Календарь приёмной кампании</div>
-              <h2 className="h-1">Сроки.</h2>
+              <h2 className="h-1">Сроки</h2>
             </div>
             <p className="lead muted">
               Ключевые даты приёма документов и зачисления.
@@ -108,7 +108,7 @@ export default function Admission() {
           <div className="section__head r">
             <div>
               <div className="section__num"><b>02</b>Документы</div>
-              <h2 className="h-1">Что взять<br /><em>с собой</em>.</h2>
+              <h2 className="h-1">Что взять<br /><em>с собой</em></h2>
             </div>
             <p className="lead muted">
               Подготовь пакет заранее — это сэкономит время в очереди
@@ -132,7 +132,7 @@ export default function Admission() {
           <div className="section__head r">
             <div>
               <div className="section__num"><b>03</b>Способы подачи</div>
-              <h2 className="h-1">Четыре пути.<br />Выбирай <em>удобный</em>.</h2>
+              <h2 className="h-1">Четыре пути<br />Выбирай <em>удобный</em></h2>
             </div>
             <p className="lead muted">
               Большинство абитуриентов подают через Госуслуги — быстрее
@@ -156,7 +156,7 @@ export default function Admission() {
           <div className="section__head r">
             <div>
               <div className="section__num"><b>04</b>Вступительные экзамены</div>
-              <h2 className="h-1">ЕГЭ по<br /><em>профилю</em>.</h2>
+              <h2 className="h-1">ЕГЭ по<br /><em>профилю</em></h2>
             </div>
             <p className="lead muted">
               Минимальный порог по большинству предметов — 40–45 баллов.
@@ -193,7 +193,7 @@ export default function Admission() {
           <div className="section__head r">
             <div>
               <div className="section__num"><b>05</b>Льготы и квоты</div>
-              <h2 className="h-1">Особые<br /><em>категории</em>.</h2>
+              <h2 className="h-1">Особые<br /><em>категории</em></h2>
             </div>
             <p className="lead muted">
               Если попадаешь в одну из категорий — конкурс проходит отдельно

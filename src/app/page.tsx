@@ -95,7 +95,7 @@ export default function Home() {
             <span className="word w4"><span>профессию</span></span>
             <br />
             <span className="word w5"><span>начинается&nbsp;</span></span>
-            <span className="word w6"><span>с&nbsp;<em>вопроса</em>.</span></span>
+            <span className="word w6"><span>с&nbsp;<em>вопроса</em></span></span>
           </h1>
 
           <div className="hero__below">
@@ -142,7 +142,7 @@ export default function Home() {
           <div className="section__head r">
             <div>
               <div className="section__num"><b>02</b>Институты и факультеты</div>
-              <h2 className="h-1">Шесть направлений<br />подготовки.<br />Выбери <em>своё</em>.</h2>
+              <h2 className="h-1">Шесть направлений<br />подготовки<br />Выбери <em>своё</em></h2>
             </div>
             <p className="lead muted">
               От нефтегазового дела до IT, архитектуры и колледжа.

@@ -24,7 +24,7 @@ export default function Contacts() {
         <div className="wrap">
           <div className="contacts__hero r">
             <div className="eyebrow" style={{ marginBottom: 24 }}>№ 05 / Связь с приёмной комиссией</div>
-            <h1 className="h-1">Свяжись<br />удобным <em>способом</em>.</h1>
+            <h1 className="h-1">Свяжись<br />удобным <em>способом</em></h1>
           </div>
 
           <div className="contacts__grid r-stagger">
@@ -54,7 +54,7 @@ export default function Contacts() {
             <div className="section__head r">
               <div>
                 <div className="section__num"><b>06</b>Частые вопросы</div>
-                <h2 className="h-1">Уже отвечали<br /><em>не раз</em>.</h2>
+                <h2 className="h-1">Уже отвечали<br /><em>не раз</em></h2>
               </div>
               <p className="lead muted">
                 Не нашёл свой вопрос — задай его Алие.

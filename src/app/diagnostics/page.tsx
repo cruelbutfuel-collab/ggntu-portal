@@ -404,7 +404,7 @@ export default function Diagnostics() {
               <div className="eyebrow r" style={{ marginBottom: 16 }}>
                 <b style={{ color: 'var(--red)' }}>03</b> · Четыре оси Икигай
               </div>
-              <h2 className="h-2 r">Тест измеряет<br /><em>каждую из них.</em></h2>
+              <h2 className="h-2 r">Тест измеряет<br /><em>каждую из них</em></h2>
             </div>
             <p className="r" style={{ fontSize: 'clamp(15px,1.1vw,17px)', lineHeight: 1.7, color: 'var(--muted)', maxWidth: 400, margin: 0 }}>
               Результат покажет, какие оси у тебя развиты сильнее — и в какой зоне находится твоё призвание.
@@ -457,7 +457,7 @@ export default function Diagnostics() {
 
           {/* CTA */}
           <div className="r" style={{ marginTop: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
-            <h2 className="h-2">Пройди тест<br />за <em>3 минуты</em>.</h2>
+            <h2 className="h-2">Пройди тест<br />за <em>3 минуты</em></h2>
             <button className="btn" onClick={() => setPhase('quiz')} style={{ background: 'var(--red)', flexShrink: 0 }}>
               Начать тест <span className="btn__arr"><Arrow /></span>
             </button>
