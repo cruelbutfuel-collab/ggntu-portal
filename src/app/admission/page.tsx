@@ -41,13 +41,42 @@ const QUOTAS = [
   { tag: 'БВИ · без экзаменов', t: 'Победители олимпиад',       p: 'Победители и призёры заключительного этапа ВсОШ — поступление без вступительных испытаний.' },
 ]
 
+const CAMP_START = new Date('2026-06-20T00:00:00')
+const CAMP_END   = new Date('2026-09-01T00:00:00') // Aug 31 EOD
+
+function pluralDays(n: number) {
+  if (n % 10 === 1 && n % 100 !== 11) return 'день'
+  if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'дня'
+  return 'дней'
+}
+
 export default function Admission() {
   useReveal()
-  const [progress, setProgress] = useState(0)
+  const [progress, setProgress]     = useState(0)
+  const [countLabel, setCountLabel]  = useState('До старта')
+  const [countDays, setCountDays]    = useState(0)
 
   useEffect(() => {
-    const t = setTimeout(() => setProgress(28), 400)
-    return () => clearTimeout(t)
+    const now      = new Date()
+    const totalMs  = CAMP_END.getTime() - CAMP_START.getTime()
+    const elapsed  = now.getTime() - CAMP_START.getTime()
+
+    if (now < CAMP_START) {
+      const days = Math.ceil((CAMP_START.getTime() - now.getTime()) / 86_400_000)
+      setProgress(0)
+      setCountLabel('До старта')
+      setCountDays(days)
+    } else if (now >= CAMP_END) {
+      setProgress(100)
+      setCountLabel('Кампания завершена')
+      setCountDays(0)
+    } else {
+      const pct  = Math.min(100, Math.round((elapsed / totalMs) * 100))
+      const days = Math.ceil((CAMP_END.getTime() - now.getTime()) / 86_400_000)
+      setProgress(pct)
+      setCountLabel('До финала')
+      setCountDays(days)
+    }
   }, [])
 
   return (
@@ -70,10 +99,12 @@ export default function Admission() {
               <span>31 авг · <b>финал</b></span>
             </div>
             <div style={{ marginTop: 18, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <span className="mono uc xs muted">До старта</span>
-              <span className="h-2" style={{ fontSize: 36 }}>
-                56<em style={{ fontStyle: 'italic', color: 'var(--red)', fontSize: 16, marginLeft: 6 }}>дней</em>
-              </span>
+              <span className="mono uc xs muted">{countLabel}</span>
+              {countDays > 0 && (
+                <span className="h-2" style={{ fontSize: 36 }}>
+                  {countDays}<em style={{ fontStyle: 'italic', color: 'var(--red)', fontSize: 16, marginLeft: 6 }}>{pluralDays(countDays)}</em>
+                </span>
+              )}
             </div>
           </div>
         </div>
