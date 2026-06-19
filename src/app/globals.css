@@ -1260,8 +1260,10 @@ img, svg { display: block; max-width: 100%; }
   .fac-section { padding: 36px 0; }
   .fac-section__head { grid-template-columns: 44px 1fr; gap: 14px; }
   .fac-section__name { font-size: clamp(20px, 5.5vw, 28px); }
-  .spec-row { grid-template-columns: 52px 1fr 36px; gap: 10px 12px; padding: 16px 12px; }
+  .spec-row { grid-template-columns: 52px 1fr 36px; gap: 10px 12px; padding: 16px 12px; align-items: start; }
+  .spec-row__code { padding-top: 3px; }
   .spec-row__name { font-size: 16px; }
+  .spec-row__icon { margin-top: 2px; }
   .spec-row__meta { padding-left: 52px; font-size: 10px; gap: 6px; }
   .spec-tabs { top: 66px; }
   .tl-item { grid-template-columns: 1fr auto; gap: 8px; padding: 14px 0 14px 28px; }
@@ -2111,7 +2113,31 @@ img, svg { display: block; max-width: 100%; }
 }
 @media (max-width: 560px) {
   .exams-cal { grid-template-columns: 1fr; }
-  .exams-timeline::before { display: none; }
-  .exams-tl-item { flex-direction: row; align-items: center; gap: 10px; text-align: left; }
-  .exams-tl-item__label { max-width: none; }
+  .exams-timeline {
+    flex-direction: column;
+    gap: 0;
+  }
+  .exams-timeline::before {
+    left: 16px; right: auto; top: 0; bottom: 0;
+    width: 1px; height: auto;
+  }
+  .exams-tl-item {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    min-width: 0;
+    flex: none;
+    width: 100%;
+    padding: 14px 0 14px 40px;
+    gap: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .exams-tl-item:last-child { border-bottom: none; }
+  .exams-tl-item__dot {
+    position: absolute;
+    left: 11px;
+    margin-top: 3px;
+  }
+  .exams-tl-item__date { white-space: nowrap; min-width: 70px; }
+  .exams-tl-item__label { max-width: none; font-size: 13px; color: var(--ink); }
 }
