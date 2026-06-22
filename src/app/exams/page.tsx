@@ -305,15 +305,12 @@ export default function Exams() {
           </p>
           <div className="exams-meta r">
             <div className="exams-meta__item">
-              <span className="exams-meta__icon">📍</span>
               <span>г. Грозный, проспект им. Х.А. Исаева, 100</span>
             </div>
             <div className="exams-meta__item">
-              <span className="exams-meta__icon">🕐</span>
               <span>Начало испытаний в 9:00 и 14:00</span>
             </div>
             <div className="exams-meta__item">
-              <span className="exams-meta__icon">🪪</span>
               <span>При себе: паспорт + расписка о приёме документов</span>
             </div>
           </div>
