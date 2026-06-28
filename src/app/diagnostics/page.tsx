@@ -85,7 +85,7 @@ const H2I: Record<HollandKey, Record<IkigaiAxis, number>> = {
 }
 
 /* ── Quiz questions ────────────────────────────── */
-const QUESTIONS: { q: string; opts: { t: string; types: HollandKey[] }[] }[] = [
+const QUESTIONS: { q: string; opts: { t: string; types: HollandKey[]; spoOnly?: boolean }[] }[] = [
   {
     q: 'Что тебя по-настоящему увлекает?',
     opts: [
@@ -129,7 +129,7 @@ const QUESTIONS: { q: string; opts: { t: string; types: HollandKey[] }[] }[] = [
     q: 'Какой вклад важен для тебя?',
     opts: [
       { t: 'Создавать технологии будущего',                types: ['R', 'I', 'C'] },
-      { t: 'Строить, монтировать и чинить надёжно',        types: ['R']           },
+      { t: 'Строить, монтировать и чинить надёжно',        types: ['R'], spoOnly: true },
       { t: 'Делать мир красивее и культурнее',             types: ['A']           },
       { t: 'Помогать людям и обществу',                    types: ['S']           },
       { t: 'Развивать экономику и бизнес',                 types: ['E']           },
@@ -148,7 +148,7 @@ const QUESTIONS: { q: string; opts: { t: string; types: HollandKey[] }[] }[] = [
     q: 'Где видишь себя через 5 лет?',
     opts: [
       { t: 'Инженер, IT-специалист, учёный',               types: ['R', 'I', 'C'] },
-      { t: 'Мастером рабочей профессии или техником',       types: ['R']           },
+      { t: 'Мастером рабочей профессии или техником',       types: ['R'], spoOnly: true },
       { t: 'Предприниматель или топ-менеджер',              types: ['E']           },
       { t: 'Архитектор, дизайнер, творческий спец.',       types: ['A']           },
       { t: 'Специалист по работе с людьми',                types: ['S']           },
@@ -569,7 +569,7 @@ export default function Diagnostics() {
             <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
               <h2 className="h-2" style={{ marginBottom: 48 }}>{q.q}</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {q.opts.map(opt => (
+                {q.opts.filter(opt => !opt.spoOnly || level === 'spo').map(opt => (
                   <button
                     key={opt.t}
                     onClick={() => pick(opt.types)}
