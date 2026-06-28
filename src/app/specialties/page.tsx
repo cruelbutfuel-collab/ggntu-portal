@@ -172,7 +172,7 @@ function SpecialtiesInner() {
             className={`spec-tab spec-tab--spo${tab === 'fspo' ? ' is-active' : ''}`}
             onClick={() => { setTab('fspo'); setOpen(null) }}
           >
-            Колледж · ФСПО <span className="spec-tab__count">/ 10</span>
+            Колледж · ФСПО <span className="spec-tab__count">/ {FACULTIES.find(f => f.spo)?.specialties.length ?? 0}</span>
           </button>
         </div>
       </div>
