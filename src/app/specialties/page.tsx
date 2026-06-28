@@ -28,6 +28,10 @@ function SpecialtiesInner() {
     const raw = searchParams.get('exams')
     return raw ? new Set(raw.split(',').filter(Boolean)) : new Set()
   })
+  const [spoBase, setSpoBase] = useState<'all' | '9' | '11'>(() => {
+    const raw = searchParams.get('base')
+    return (raw === '9' || raw === '11') ? raw : 'all'
+  })
   const [open, setOpen]               = useState<string | null>(null)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [fading, setFading]           = useState(false)
@@ -82,10 +86,13 @@ function SpecialtiesInner() {
           )
           if (!allCovered) return false
         }
+        if (spoBase !== 'all' && f.spo) {
+          if (!s.form.includes(`${spoBase} кл.`)) return false
+        }
         return true
       }),
     })).filter(f => f.specialties.length > 0)
-  }, [tab, level, debouncedQuery, examFilters])
+  }, [tab, level, debouncedQuery, examFilters, spoBase])
 
   const totalShown = list.reduce((s, f) => s + f.specialties.length, 0)
 
@@ -106,10 +113,11 @@ function SpecialtiesInner() {
     if (tab !== 'all') params.set('f', tab)
     if (debouncedQuery) params.set('q', debouncedQuery)
     if (level !== 'all') params.set('lvl', level)
+    if (spoBase !== 'all') params.set('base', spoBase)
     if (examFilters.size > 0) params.set('exams', [...examFilters].join(','))
     const qs = params.toString()
     router.replace(qs ? `/specialties?${qs}` : '/specialties', { scroll: false })
-  }, [tab, debouncedQuery, level, examFilters, router])
+  }, [tab, debouncedQuery, level, spoBase, examFilters, router])
 
   const toggleExam = (sub: string) => {
     setExamFilters(prev => {
@@ -122,13 +130,14 @@ function SpecialtiesInner() {
 
   const resetAll = () => {
     setTab('all'); setRawQuery(''); setDebouncedQuery(''); setLevel('all')
-    setExamFilters(new Set()); setOpen(null)
+    setExamFilters(new Set()); setOpen(null); setSpoBase('all')
   }
 
   const activeCount =
     (tab !== 'all' ? 1 : 0) +
     (rawQuery ? 1 : 0) +
     (level !== 'all' ? 1 : 0) +
+    (spoBase !== 'all' ? 1 : 0) +
     examFilters.size
 
   return (
@@ -222,6 +231,24 @@ function SpecialtiesInner() {
                 )}
               </div>
             </div>
+
+            {/* SPO base filter — only for ФСПО tab */}
+            {tab === 'fspo' && (
+              <div className="sfilter__row">
+                <div className="level-filter">
+                  <span className="level-filter__label">База:</span>
+                  {(['all', '9', '11'] as const).map(val => (
+                    <button
+                      key={val}
+                      className={`level-chip${spoBase === val ? ' is-active' : ''}`}
+                      onClick={() => { setSpoBase(val); setOpen(null) }}
+                    >
+                      {val === 'all' ? 'Все' : `После ${val} класса`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Level filter */}
             <div className="sfilter__row">
