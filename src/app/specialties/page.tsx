@@ -383,14 +383,25 @@ function SpecialtiesInner() {
 
                               <h5>Стоимость · в год</h5>
                               <div className="tuition-list">
-                                <div className="tuition-row">
-                                  <span>Очная</span>
-                                  <b>{s.fee.toLocaleString('ru-RU')} ₽</b>
-                                </div>
-                                <div className="tuition-row">
-                                  <span>Заочная</span>
-                                  <b>{Math.round(s.fee * 0.28).toLocaleString('ru-RU')} ₽</b>
-                                </div>
+                                {s.tuition ? s.tuition.map((row, i) => (
+                                  <div key={i} className="tuition-row">
+                                    <span>{row.label}</span>
+                                    {row.price === 0
+                                      ? <b style={{ color: 'var(--green, #22c55e)' }}>бесплатно</b>
+                                      : <b>{row.price.toLocaleString('ru-RU')} ₽</b>}
+                                  </div>
+                                )) : (
+                                  <>
+                                    <div className="tuition-row">
+                                      <span>Очная</span>
+                                      <b>{s.fee.toLocaleString('ru-RU')} ₽</b>
+                                    </div>
+                                    <div className="tuition-row">
+                                      <span>Заочная</span>
+                                      <b>{Math.round(s.fee * 0.28).toLocaleString('ru-RU')} ₽</b>
+                                    </div>
+                                  </>
+                                )}
                               </div>
 
                               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
