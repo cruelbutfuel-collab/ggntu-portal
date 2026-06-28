@@ -250,48 +250,52 @@ function SpecialtiesInner() {
               </div>
             )}
 
-            {/* Level filter */}
-            <div className="sfilter__row">
-              <div className="level-filter">
-                <span className="level-filter__label">Уровень:</span>
-                {LEVEL_OPTIONS.map(l => {
-                  const val = l === 'Все' ? 'all' : l
-                  return (
-                    <button
-                      key={l}
-                      className={`level-chip${level === val ? ' is-active' : ''}`}
-                      onClick={() => { setLevel(val); setOpen(null) }}
-                    >
-                      {l}
-                    </button>
-                  )
-                })}
+            {/* Level filter — hidden for ФСПО */}
+            {tab !== 'fspo' && (
+              <div className="sfilter__row">
+                <div className="level-filter">
+                  <span className="level-filter__label">Уровень:</span>
+                  {LEVEL_OPTIONS.map(l => {
+                    const val = l === 'Все' ? 'all' : l
+                    return (
+                      <button
+                        key={l}
+                        className={`level-chip${level === val ? ' is-active' : ''}`}
+                        onClick={() => { setLevel(val); setOpen(null) }}
+                      >
+                        {l}
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Exam chips */}
-            <div className="sfilter__row">
-              <div className="exam-filter">
-                <span className="exam-filter__label">ЕГЭ:</span>
-                {ALL_EXAM_SUBJECTS.map(sub => (
-                  <button
-                    key={sub}
-                    className={`exam-chip${examFilters.has(sub) ? ' is-active' : ''}`}
-                    onClick={() => toggleExam(sub)}
-                  >
-                    {sub}
-                  </button>
-                ))}
-                {examFilters.size > 0 && (
-                  <button
-                    className="exam-chip exam-chip--reset"
-                    onClick={() => { setExamFilters(new Set()); setOpen(null) }}
-                  >
-                    Сбросить
-                  </button>
-                )}
+            {/* Exam chips — hidden for ФСПО */}
+            {tab !== 'fspo' && (
+              <div className="sfilter__row">
+                <div className="exam-filter">
+                  <span className="exam-filter__label">ЕГЭ:</span>
+                  {ALL_EXAM_SUBJECTS.map(sub => (
+                    <button
+                      key={sub}
+                      className={`exam-chip${examFilters.has(sub) ? ' is-active' : ''}`}
+                      onClick={() => toggleExam(sub)}
+                    >
+                      {sub}
+                    </button>
+                  ))}
+                  {examFilters.size > 0 && (
+                    <button
+                      className="exam-chip exam-chip--reset"
+                      onClick={() => { setExamFilters(new Set()); setOpen(null) }}
+                    >
+                      Сбросить
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
