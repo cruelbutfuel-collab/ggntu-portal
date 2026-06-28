@@ -651,7 +651,7 @@ export default function Diagnostics() {
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }} className="r-stagger">
                     {(level === 'spo'
-                      ? fac.specialties.slice(0, 6)
+                      ? fac.specialties
                       : level === 'mag'
                       ? fac.specialties
                           .filter(sp => sp.level === 'Магистратура' && info.magCodes.includes(sp.code))
