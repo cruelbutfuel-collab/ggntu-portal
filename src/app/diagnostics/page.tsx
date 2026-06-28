@@ -692,7 +692,7 @@ export default function Diagnostics() {
                   <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 24 }}>
                     {fac.short} · {fac.name}
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }} className="r-stagger">
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }} className="r-stagger diag-spec-grid">
                     {(level === 'spo'
                       ? [...fac.specialties].sort((a, b) => {
                           const ai = info.spoSpecCodes.indexOf(a.code)

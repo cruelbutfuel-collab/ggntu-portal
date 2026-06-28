@@ -2141,3 +2141,78 @@ img, svg { display: block; max-width: 100%; }
   .exams-tl-item__date { white-space: nowrap; min-width: 70px; }
   .exams-tl-item__label { max-width: none; font-size: 13px; color: var(--ink); }
 }
+
+/* ═══════════════════════════════════════════
+   MOBILE IMPROVEMENTS
+   ═══════════════════════════════════════════ */
+
+/* ── Header: 64px on small phones ──────────────────
+   Saves 12px of viewport height on every page.
+   Nav drawer and spec-tabs sticky offset updated to match. */
+@media (max-width: 640px) {
+  .header__row { height: 64px; }
+  .brand__logo  { width: 44px; height: 44px; }
+  .spec-tabs    { top: 64px; }
+  .nav          { top: 64px !important; }
+}
+
+/* ── Nav drawer: prevent overflow on 320 px phones ── */
+@media (max-width: 1100px) {
+  .nav { width: min(280px, calc(100vw - 40px)); }
+}
+
+/* ── Spec-tabs: horizontal scroll instead of wrapping ─
+   Stacked tabs waste too much vertical space on mobile. */
+@media (max-width: 768px) {
+  .spec-tabs__row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 2px;
+  }
+  .spec-tabs__row::-webkit-scrollbar { display: none; }
+  .spec-tab { white-space: nowrap; flex-shrink: 0; }
+}
+
+/* ── Chat page: critical fix for 720 px min-height ──
+   On iPhone SE (667 px) the chat was taller than the screen. */
+@media (max-width: 768px) {
+  .chat-page        { padding: 20px 0 48px; }
+  .chat__layout     { min-height: clamp(480px, calc(100svh - 96px), 720px); }
+  .chat__body       { max-height: clamp(240px, calc(100svh - 340px), 480px); padding: 20px 16px; }
+  .chat__head       { padding: 14px 16px; }
+  .chat__input-wrap { padding: 12px 16px 14px; }
+}
+@media (max-width: 640px) {
+  .chat-page    { padding: 0 0 40px; }
+  .chat__layout { border-radius: 0; margin: 0 calc(-1 * var(--pad)); }
+}
+
+/* ── Stats strip: reduce cell padding on phones ─── */
+@media (max-width: 640px) {
+  .stats__cell { padding: 20px 14px; }
+}
+
+/* ── Admission timeline: slightly tighter on phones ── */
+@media (max-width: 640px) {
+  .tl-item { padding-top: 12px; padding-bottom: 12px; }
+}
+
+/* ── Exam table: scrollable on mobile ─────────────── */
+@media (max-width: 768px) {
+  .exam-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .exam-table      { min-width: 560px; }
+}
+
+/* ── Diagnostics: result card grid ────────────────── */
+@media (max-width: 640px) {
+  .diag-spec-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ── Button: ensure min touch target on mobile ─────── */
+@media (max-width: 768px) {
+  .spec-tab { min-height: 42px; display: inline-flex; align-items: center; }
+  .btn      { min-height: 48px; }
+}
